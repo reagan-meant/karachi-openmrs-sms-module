@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
 import org.openmrs.module.bahminischeduling.ConceptName;
+import org.openmrs.module.bahminischeduling.DataLoad;
 import org.openmrs.module.bahminischeduling.Item;
 import org.openmrs.module.bahminischeduling.PatientAppointment;
 import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
@@ -205,5 +206,13 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 		}
 		
 		return message;
+	}
+	
+	public List<DataLoad> getDataLoaded() {
+		return dao.getDataLoaded();
+	}
+	
+	public void insertIntoDataLoad() {
+		dao.insertIntoDataLoad();
 	}
 }

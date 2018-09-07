@@ -17,6 +17,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
 import org.openmrs.module.bahminischeduling.BahminischedulingConfig;
 import org.openmrs.module.bahminischeduling.ConceptName;
+import org.openmrs.module.bahminischeduling.DataLoad;
 import org.openmrs.module.bahminischeduling.Item;
 import org.openmrs.module.bahminischeduling.PatientAppointment;
 import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
@@ -103,4 +104,8 @@ public interface BahminischedulingService extends OpenmrsService {
 	PersonName getPersonNameByPersonId(int id);
 	
 	Message sendSmsService(String toNumber, String textMessage);
+	
+	List<DataLoad> getDataLoaded();
+	
+	void insertIntoDataLoad();
 }

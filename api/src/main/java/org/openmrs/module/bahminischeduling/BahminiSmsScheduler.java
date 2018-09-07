@@ -44,7 +44,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 		System.out.println("***************** '" + Context.getAdministrationService().getGlobalProperty("twilioNumber")
 		        + "' *********************");
 		log.info("METHOD  : sendSMSForAppointment start ********************************");
-		//		 createTables();
+		insertIntoDataLoad();
 		
 		//List<PatientAppointment> patientAppointmentList = patientAppointmentQuery.getPatientAppointmentsByStatus("Scheduled");
 		insertDataIntoPatientAppointmentReminer();
@@ -616,6 +616,14 @@ public class BahminiSmsScheduler extends AbstractTask {
 		}
 		log.info("METHOD getPatientAppointmentIdsList  End ");
 		return patientAppointmentIdList;
+	}
+	
+	public void insertIntoDataLoad() {
+		log.info("METHOD createTables  START ");
+		if (Context.getService(BahminischedulingService.class).getDataLoaded().size() == 0) {
+			Context.getService(BahminischedulingService.class).insertIntoDataLoad();
+		}
+		log.info("METHOD createTables  End ");
 	}
 	
 	@Override

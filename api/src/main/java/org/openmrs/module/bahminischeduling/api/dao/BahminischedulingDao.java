@@ -482,4 +482,9 @@ public class BahminischedulingDao {
 				 .forEach(patientApp -> personNameList.add(patientApp));
 		 return personNameList.get(0);
 	 }
+	
+	public void insertIntoDataLoad() {
+		jdbcTemplate.execute(" INSERT INTO  data_load " + " (id, " + " data_loaded_check) " + " VALUES " + " ( 1, "
+		        + " 'NO') ");
+	}
 }
