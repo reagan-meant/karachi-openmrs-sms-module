@@ -23,10 +23,11 @@
   		    http://www.springframework.org/schema/util
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <context:component-scan base-package="org.openmrs.module.bahminischeduling" />
-
+    <context:component-scan base-package="org.openmrs.module.bahminischeduling" />    
+    
     <!-- Wraps BahminischedulingService methods in DB transactions and OpenMRS interceptors,
     which set audit info like dateCreated, changedBy, etc.-->
+    
     <bean id="bahminischeduling.BahminischedulingService"
             class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">

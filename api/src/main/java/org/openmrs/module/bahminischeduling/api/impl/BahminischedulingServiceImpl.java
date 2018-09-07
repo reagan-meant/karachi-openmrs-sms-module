@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
 import org.openmrs.module.bahminischeduling.ConceptName;
@@ -24,7 +25,14 @@ import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
 import org.openmrs.module.bahminischeduling.api.BahminischedulingService;
 import org.openmrs.module.bahminischeduling.api.dao.BahminischedulingDao;
+import org.openmrs.module.bahminischeduling.twilio.IOutBoundService;
+import org.springframework.stereotype.Service;
 
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+@Service
 public class BahminischedulingServiceImpl extends BaseOpenmrsService implements BahminischedulingService {
 	
 	BahminischedulingDao dao;
@@ -135,7 +143,7 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 	@Override
 	public PatientAppointmentReminder getPatientAppointmentReminderByMaxValueId() {
 		// TODO Auto-generated method stub
-		return getPatientAppointmentReminderByMaxValueId();
+		return dao.getPatientAppointmentReminderByMaxValueId();
 	}
 	
 	@Override
@@ -173,5 +181,29 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 	public PersonName getPersonNameByPersonId(int id) {
 		// TODO Auto-generated method stub
 		return dao.getPersonNameByPersonId(id);
+	}
+	
+	public Message sendSmsService(String toNumber, String textMessage) {
+		
+		System.out.println("METHOD : sendSmsService start toNumber=" + toNumber + "----textMessage=" + textMessage);
+		
+		Message message = null;
+		
+		try {
+			
+			Twilio.init(Context.getAdministrationService().getGlobalProperty(IOutBoundService.ACCOUNT_SID), Context
+			        .getAdministrationService().getGlobalProperty(IOutBoundService.AUTH_TOKEN));
+			message = Message.creator(new PhoneNumber(toNumber),
+			    new PhoneNumber(Context.getAdministrationService().getGlobalProperty(IOutBoundService.TWILIO_NUMBER)),
+			    textMessage).create();
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			
+			e.printStackTrace();
+		}
+		
+		return message;
 	}
 }

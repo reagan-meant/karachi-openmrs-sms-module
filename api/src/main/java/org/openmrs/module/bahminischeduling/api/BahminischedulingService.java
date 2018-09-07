@@ -23,12 +23,16 @@ import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
 import org.openmrs.module.bahminischeduling.PersonAttribute;
 import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.twilio.rest.api.v2010.account.Message;
 
 /**
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
+@Component
 public interface BahminischedulingService extends OpenmrsService {
 	
 	/**
@@ -97,4 +101,6 @@ public interface BahminischedulingService extends OpenmrsService {
 	List<PersonAttributeType> getPersonAttributeTypeById(int id);
 	
 	PersonName getPersonNameByPersonId(int id);
+	
+	Message sendSmsService(String toNumber, String textMessage);
 }

@@ -8,9 +8,7 @@ import org.apache.commons.logging.LogFactory;
 //import org.apache.log4j.log;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.openmrs.GlobalProperty;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.impl.AdministrationServiceImpl;
+import org.openmrs.module.bahminischeduling.api.BahminischedulingService;
 import org.openmrs.module.bahminischeduling.api.impl.BahminischedulingServiceImpl;
 import org.openmrs.module.bahminischeduling.template.LanguageTemplate;
 import org.openmrs.module.bahminischeduling.twilio.OutBoundService;
@@ -18,6 +16,7 @@ import org.openmrs.module.bahminischeduling.utilities.CustomDate;
 import org.openmrs.scheduler.tasks.AbstractTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.openmrs.api.context.Context;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +25,7 @@ import com.twilio.rest.api.v2010.account.Message;
 public class BahminiSmsScheduler extends AbstractTask {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-
+	
 	@Autowired
 	BahminischedulingServiceImpl service;
 	
@@ -49,7 +48,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 		
 		//List<PatientAppointment> patientAppointmentList = patientAppointmentQuery.getPatientAppointmentsByStatus("Scheduled");
 		insertDataIntoPatientAppointmentReminer();
-		List<PatientAppointmentReminder> patientAppointmentReminderList = service
+		List<PatientAppointmentReminder> patientAppointmentReminderList = Context.getService(BahminischedulingService.class)
 		        .getPatientAppointmentReminderListBySmsStatus();
 		List<PatientAppointment> patientAppointmentList = getPatientAppointmentDataFromReminders(patientAppointmentReminderList);
 		log.info(" METHOD  : sendSMSForAppointment patientAppointmentReminderList" + patientAppointmentReminderList.size());
@@ -112,33 +111,37 @@ public class BahminiSmsScheduler extends AbstractTask {
 								String tempMessage = LanguageTemplate.URDU;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneDay = messageOneDay + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Sindhi")) {
 								String tempMessage = LanguageTemplate.SINDHI;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneDay = messageOneDay + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Pashtu")) {
 								String tempMessage = LanguageTemplate.PASHTU;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneDay = messageOneDay + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Bengali")) {
 								String tempMessage = LanguageTemplate.BENGALI;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneDay = messageOneDay + " " + tempMessage;
 							}
 						} else if (checkDateForOneWeek(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
@@ -151,33 +154,37 @@ public class BahminiSmsScheduler extends AbstractTask {
 								String tempMessage = LanguageTemplate.URDU;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneWeek = messageOneWeek + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Sindhi")) {
 								String tempMessage = LanguageTemplate.SINDHI;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneWeek = messageOneWeek + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Pashtu")) {
 								String tempMessage = LanguageTemplate.PASHTU;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneWeek = messageOneWeek + " " + tempMessage;
 							} else if (sendInformation.getPreferredLanguage().equals("Bengali")) {
 								String tempMessage = LanguageTemplate.BENGALI;
 								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
 								        .getStart_date_time());
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getService(BahminischedulingService.class).getAppointmentServiceName(
+								        specificPatientAppointmentList.get(i).getAppointment_service_id()));
 								messageOneWeek = messageOneWeek + " " + tempMessage;
 							}
 						}
@@ -216,7 +223,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 		}
 		log.info("METHOD  : sendSMSForAppointment End ***************************************** ");
 	}
-			
+	
 	private SendInformation getSendInformation(PatientAppointment patientAppointment, SendInformation sendInformation) {
 		log.info(" METHOD  : getSendInformation start ");
 		String contactNumber = "";
@@ -224,9 +231,11 @@ public class BahminiSmsScheduler extends AbstractTask {
 		String consentId = "";
 		String preferredLanguageName = "";
 		String consentValue = "";
-		List<PersonAttribute> personAttributeList = service.getPersonAttributeByPersonId(patientAppointment.getPatient_id());
+		List<PersonAttribute> personAttributeList = Context.getService(BahminischedulingService.class)
+		        .getPersonAttributeByPersonId(patientAppointment.getPatient_id());
 		PersonName personName = new PersonName();
-		personName = service.getPersonNameByPersonId(patientAppointment.getPatient_id());
+		personName = Context.getService(BahminischedulingService.class).getPersonNameByPersonId(
+		    patientAppointment.getPatient_id());
 		sendInformation.setName(personName.getGiven_name());
 		
 		for (int j = 0; j < personAttributeList.size(); j++) {
@@ -247,8 +256,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 				break;
 			}
 		}
-		ConceptName conceptNameForLanguage = service.getConceptNameByConceptId(Integer.parseInt(preferredLanguageConceptId
-		        .trim()));
+		ConceptName conceptNameForLanguage = Context.getService(BahminischedulingService.class).getConceptNameByConceptId(
+		    Integer.parseInt(preferredLanguageConceptId.trim()));
 		preferredLanguageName = conceptNameForLanguage.getName();
 		//	ConceptName conceptNameForConsent = conceptNameQueries.getConceptNameByConceptId(Integer.parseInt( consentId.trim()));
 		//	consentValue= conceptNameForConsent.getName();
@@ -289,8 +298,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 			
 			sendInformation.setContactNumber(contactNumberTemp);
 			
-			Message messageResponse = outBoundService.sendSmsService(sendInformation.getContactNumber(),
-			    sendInformation.getOneDayMessage());
+			Message messageResponse = Context.getService(BahminischedulingService.class).sendSmsService(
+			    sendInformation.getContactNumber(), sendInformation.getOneDayMessage());
 			
 			List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
 			
@@ -319,7 +328,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 			appointmentReminderLog.setPatient_id(sendInformation.getPatientId());
 			appointmentReminderLog.setSent_on(CustomDate.getCurrentDateInString(CustomDate.DATE_FORMAT_YYYY_MM_DD));
 			appointmentReminderLog.setPatient_appointment_ids_one_day(sendInformation.getPatientAppointmentIdsForOneDay());
-			service.insert(appointmentReminderLog);
+			Context.getService(BahminischedulingService.class).insert(appointmentReminderLog);
 			
 			List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation.getPatientAppointmentIdsForOneDay());
 			
@@ -332,8 +341,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 				patientAppointmentReminder = null;
 			}
 			if (messageResponse.getErrorCode() == null) {
-				service.updateSmsStatusByPatientAppointmentId(patientAppointmentReminderList,
-				    smsStatus);
+				Context.getService(BahminischedulingService.class).updateSmsStatusByPatientAppointmentId(
+				    patientAppointmentReminderList, smsStatus);
 			}
 		}
 		log.info("sendInformation.getContactNumber()=" + sendInformation.getContactNumber());
@@ -349,8 +358,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 				contactNumberTemp = contactNumberTemp.replaceFirst("0", "+92");
 				sendInformation.setContactNumber(contactNumberTemp);
 			}
-			Message messageResponse = outBoundService.sendSmsService(sendInformation.getContactNumber(),
-			    sendInformation.getOneWeekMessage());
+			Message messageResponse = Context.getService(BahminischedulingService.class).sendSmsService(
+			    sendInformation.getContactNumber(), sendInformation.getOneWeekMessage());
 			List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
 			appointmentReminderLog = new AppointmentReminderLog();
 			appointmentReminderLog.setMessage(sendInformation.getOneWeekMessage());
@@ -377,7 +386,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 			appointmentReminderLog.setSent_on(CustomDate
 			        .getCurrentDateTimeInString(CustomDate.DATE_FORMAT_YYYY_MM_DD_HH_MM_SS));
 			appointmentReminderLog.setPatient_appointment_ids_one_week(sendInformation.getPatientAppointmentIdsForOneWeek());
-			service.insert(appointmentReminderLog);
+			Context.getService(BahminischedulingService.class).insert(appointmentReminderLog);
 			
 			List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation.getPatientAppointmentIdsForOneWeek());
 			log.info(" METHOD  : sendSmsAndLogging patientAIdsAL=" + patientAIdsAL);
@@ -391,8 +400,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 				patientAppointmentReminder = null;
 			}
 			if (messageResponse.getErrorCode() == null) {
-				service.updateSmsStatusByPatientAppointmentId(patientAppointmentReminderList,
-				    smsStatus);
+				Context.getService(BahminischedulingService.class).updateSmsStatusByPatientAppointmentId(
+				    patientAppointmentReminderList, smsStatus);
 			}
 		}
 		log.info(" METHOD  : sendSmsAndLogging end ");
@@ -469,30 +478,32 @@ public class BahminiSmsScheduler extends AbstractTask {
 		
 		// initial data check 	
 		String dataLoadedCheck = "";
-		dataLoadedCheck = service.getDataLoadedCheck();
+		dataLoadedCheck = Context.getService(BahminischedulingService.class).getDataLoadedCheck();
 		
 		if (dataLoadedCheck.equals("NO")) {
-			List<PatientAppointment> patientAppointmentList = service.getPatientAppointmentsByStatus("Scheduled");
+			List<PatientAppointment> patientAppointmentList = Context.getService(BahminischedulingService.class)
+			        .getPatientAppointmentsByStatus("Scheduled");
 			
 			//  save into patient appointment reminder initial Data	
 			insertDataInPatientAppointmentReminder(patientAppointmentList);
-			service.updateDataLoadedCheckYes();
+			Context.getService(BahminischedulingService.class).updateDataLoadedCheckYes();
 		}
 		
 		// Getting max value of patient appointment id  	
-		PatientAppointmentReminder patientAppointmentReminder = service
+		PatientAppointmentReminder patientAppointmentReminder = Context.getService(BahminischedulingService.class)
 		        .getPatientAppointmentReminderByMaxValueOfPatientAppointmentId();
 		// if data  exist 
 		if (patientAppointmentReminder.getPatient_appointment_id() != 0) {
 			log.info("METHOD  : insertDataIntoPatientAppointmentReminer  patientAppointmentReminder.getPatient_appointment_id()="
 			        + patientAppointmentReminder.getPatient_appointment_id());
-			List<PatientAppointment> patientAppointmentList = service
+			List<PatientAppointment> patientAppointmentList = Context.getService(BahminischedulingService.class)
 			        .getPatientAppointmentsGreaterThanPatientaAppointmentId(
 			            patientAppointmentReminder.getPatient_appointment_id(), "Scheduled");
 			List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
 			
 			int maxPatientAppointmentReminderId = 1;
-			PatientAppointmentReminder maxPatientAppointmentReminder = service.getPatientAppointmentReminderByMaxValueId();
+			PatientAppointmentReminder maxPatientAppointmentReminder = Context.getService(BahminischedulingService.class)
+			        .getPatientAppointmentReminderByMaxValueId();
 			if (maxPatientAppointmentReminder.getId() != 0) {
 				maxPatientAppointmentReminderId = maxPatientAppointmentReminder.getId();
 				maxPatientAppointmentReminderId++;
@@ -527,14 +538,14 @@ public class BahminiSmsScheduler extends AbstractTask {
 				//            	 patientAppointmentReminderTemp.setConsent(pa.getValue()); 
 				//    		 }
 				//    	 }      		
-				patientAppointmentReminderTemp.setConsent(service.getConsentByPersonId(patientAppointment.getPatient_id(),
-				    17).getValue());
+				patientAppointmentReminderTemp.setConsent(Context.getService(BahminischedulingService.class)
+				        .getConsentByPersonId(patientAppointment.getPatient_id(), 17).getValue());
 				
 				patientAppointmentReminderList.add(patientAppointmentReminderTemp);
 				patientAppointmentReminderTemp = null;
 				maxPatientAppointmentReminderId++;
 			}
-			service.insert(patientAppointmentReminderList);
+			Context.getService(BahminischedulingService.class).insert(patientAppointmentReminderList);
 			patientAppointmentReminderList = null;
 		}
 		log.info("METHOD : insertDataIntoPatientAppointmentReminer End ");
@@ -581,12 +592,12 @@ public class BahminiSmsScheduler extends AbstractTask {
 			patientAppointmentReminderTemp.setStatus(patientAppointment.getStatus());
 			patientAppointmentReminderTemp.setSms_status("valueNotSet");
 			/*TODO adding consent*/
-			patientAppointmentReminderTemp.setConsent(service.getConsentByPersonId(patientAppointment.getPatient_id(), 17)
-			        .getValue());
+			patientAppointmentReminderTemp.setConsent(Context.getService(BahminischedulingService.class)
+			        .getConsentByPersonId(patientAppointment.getPatient_id(), 17).getValue());
 			patientAppointmentReminderList.add(patientAppointmentReminderTemp);
 			patientAppointmentReminderTemp = null;
 		}
-		service.insert(patientAppointmentReminderList);
+		Context.getService(BahminischedulingService.class).insert(patientAppointmentReminderList);
 		log.info("METHOD  insertDataInPatientAppointmentReminder End ");
 	}
 	
