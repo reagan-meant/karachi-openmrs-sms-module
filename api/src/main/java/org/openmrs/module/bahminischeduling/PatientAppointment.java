@@ -1,5 +1,9 @@
 package org.openmrs.module.bahminischeduling;
 
+import java.util.Date;
+
+import org.joda.time.DateTime;
+
 public class PatientAppointment {
 	
 	private int patient_appointment_id;

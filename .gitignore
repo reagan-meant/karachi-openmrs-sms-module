@@ -6,6 +6,9 @@ target/
 # Log file
 *.log
 
+api/.classpath
+api/.settings/org.eclipse.jdt.core.prefs
+
 # BlueJ files
 *.ctxt
 

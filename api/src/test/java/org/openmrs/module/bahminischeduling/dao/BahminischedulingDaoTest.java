@@ -39,7 +39,7 @@ public class BahminischedulingDaoTest extends BaseModuleContextSensitiveTest {
 	@Ignore("Unignore if you want to make the Item class persistable, see also Item and liquibase.xml")
 	public void saveItem_shouldSaveAllPropertiesInDb() {
 		//Given
-		Item item = new Item();
+		/*Item item = new Item();
 		item.setDescription("some description");
 		item.setOwner(userService.getUser(1));
 		
@@ -55,6 +55,6 @@ public class BahminischedulingDaoTest extends BaseModuleContextSensitiveTest {
 		
 		assertThat(savedItem, hasProperty("uuid", is(item.getUuid())));
 		assertThat(savedItem, hasProperty("owner", is(item.getOwner())));
-		assertThat(savedItem, hasProperty("description", is(item.getDescription())));
+		assertThat(savedItem, hasProperty("description", is(item.getDescription())));*/
 	}
 }

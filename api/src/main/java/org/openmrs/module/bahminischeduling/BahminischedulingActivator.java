@@ -9,9 +9,14 @@
  */
 package org.openmrs.module.bahminischeduling;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -20,11 +25,17 @@ public class BahminischedulingActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	public static JdbcTemplate jdbcTemplate;
+	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
 		log.info("Started Bahminischeduling");
+		DataSource ds = new SingleConnectionDataSource(Context.getRuntimeProperties().getProperty("connection.url"), Context
+		        .getRuntimeProperties().getProperty("connection.username"), Context.getRuntimeProperties().getProperty(
+		    "connection.password"), true);
+		jdbcTemplate = new JdbcTemplate(ds);
 	}
 	
 	/**

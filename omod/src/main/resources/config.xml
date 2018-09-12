@@ -7,7 +7,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.bahminischeduling</package>
-	<author>Imran-PC</author>
+	<author>Imran Arif</author>
 	<description>
 			${project.parent.description}
 	</description>

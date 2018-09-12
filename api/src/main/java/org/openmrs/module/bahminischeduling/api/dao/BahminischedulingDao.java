@@ -17,11 +17,14 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
 import org.openmrs.module.bahminischeduling.AppointmentService;
+import org.openmrs.module.bahminischeduling.BahminischedulingActivator;
 import org.openmrs.module.bahminischeduling.ConceptName;
 import org.openmrs.module.bahminischeduling.DataLoad;
 import org.openmrs.module.bahminischeduling.Item;
@@ -30,29 +33,30 @@ import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
 import org.openmrs.module.bahminischeduling.PersonAttribute;
 import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
+import org.openmrs.module.bahminischeduling.SmsLanguage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.stereotype.Repository;
 
-@Repository("bahminischeduling.BahminischedulingDao")
+@Repository
 public class BahminischedulingDao {
 	
 	@Autowired
-	DbSessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 	
-	@Autowired
-	JdbcTemplate jdbcTemplate;
+	/*@Autowired
+	JdbcTemplate jdbcTemplate;*/
 	
 	public static Logger LOGGER = Logger.getLogger(BahminischedulingDao.class);
 	
-	private DbSession getSession() {
+	private Session getSession() {
 		return sessionFactory.getCurrentSession();
 	}
 	
-	public Item getItemByUuid(String uuid) {
+	/*public Item getItemByUuid(String uuid) {
 		return (Item) getSession().createCriteria(Item.class).add(Restrictions.eq("uuid", uuid)).uniqueResult();
-	}
+	}*/
 	
 	public Item saveItem(Item item) {
 		getSession().saveOrUpdate(item);
@@ -64,7 +68,7 @@ public class BahminischedulingDao {
 	 */
 	
 	public void insert(AppointmentReminderLog appointmentReminderLog) {
-		jdbcTemplate.update("INSERT INTO openmrs.appointment_reminder_log (message, "
+		BahminischedulingActivator.jdbcTemplate.update("INSERT INTO openmrs.appointment_reminder_log (message, "
 		        + " patient_appointment_ids_one_day , " + " patient_appointment_ids_one_week , " + " patient_id,"
 		        + " sent_on," + " contactNumber," + " messagesid," + " messagingServiceSid," + " error_code,"
 		        + " errorMessage)" + " VALUES (?,?,?,?,?,?,?,?,?,?)", appointmentReminderLog.getMessage(),
@@ -83,7 +87,7 @@ public class BahminischedulingDao {
 			  
 			  List<AppointmentService> appointmentServices=new ArrayList<AppointmentService>();
 	
-			  jdbcTemplate.query(
+			  BahminischedulingActivator.jdbcTemplate.query(
 		                "SELECT * FROM  appointment_service where appointment_service_id = ?", 
 		                new Object[] { appointmentServiceId },
 		                (rs, rowNum) -> new AppointmentService(
@@ -113,7 +117,7 @@ public class BahminischedulingDao {
 	
 		 List<ConceptName> conceptNameList=new ArrayList<ConceptName>();
 	
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  concept_name where concept_id = ?", 
 				 new Object[] { conceptId },
 				 (rs, rowNum) -> new ConceptName(rs.getInt("concept_name_id"), 
@@ -137,7 +141,7 @@ public class BahminischedulingDao {
 		 System.out.println("METHOD : getDataLoadedCheck  ");
 		 List<DataLoad> dataLoadList=new ArrayList<DataLoad>();
 	
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  data_load ", 
 				 (rs, rowNum) -> new DataLoad(rs.getInt("id"), 
 						 rs.getString("data_loaded_check"))
@@ -152,11 +156,12 @@ public class BahminischedulingDao {
 	
 	public void updateDataLoadedCheckYes() {
 		System.out.println(" start updateDataLoadedCheckYes ");
-		this.jdbcTemplate.update("update data_load set data_loaded_check = ? where id = ?", "YES", 1);
+		BahminischedulingActivator.jdbcTemplate.update("update data_load set data_loaded_check = ? where id = ?", "YES", 1);
 	}
 	
 	public void insertDataLoadedCheckYes() {
-		jdbcTemplate.update("INSERT INTO data_load ( id,  data_loaded_check )" + " VALUES (?,?)", 1, "YES"
+		BahminischedulingActivator.jdbcTemplate.update("INSERT INTO data_load ( id,  data_loaded_check )" + " VALUES (?,?)",
+		    1, "YES"
 		
 		);
 	}
@@ -167,7 +172,7 @@ public class BahminischedulingDao {
 		 
 		 List<DataLoad> dataLoadList=new ArrayList<DataLoad>();
 	
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  data_load ", 
 				 (rs, rowNum) -> new DataLoad(rs.getInt("id"), 
 						 rs.getString("data_loaded_check"))
@@ -183,7 +188,7 @@ public class BahminischedulingDao {
 	
 			  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
 	
-			  jdbcTemplate.query(
+			  BahminischedulingActivator.jdbcTemplate.query(
 		                "SELECT * FROM  patient_appointment where status = ?", 
 		                new Object[] { status },
 		                (rs, rowNum) -> new PatientAppointment(rs.getInt("patient_appointment_id"), 
@@ -215,7 +220,7 @@ public class BahminischedulingDao {
 			 
 			  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
 	
-			  jdbcTemplate.query(
+			  BahminischedulingActivator.jdbcTemplate.query(
 		                "SELECT * FROM  patient_appointment where patient_appointment_id > ? and status = ? ", 
 		                new Object[] { patientAppointmentId , status },
 		                (rs, rowNum) -> new PatientAppointment(rs.getInt("patient_appointment_id"), 
@@ -241,7 +246,8 @@ public class BahminischedulingDao {
 	public void updatePatientAppointment(int id, String status) {
 		
 		System.out.println(" start updatePatientAppointment ");
-		this.jdbcTemplate.update("update patient_appointment set status = ? where patient_appointment_id = ?", status, id);
+		BahminischedulingActivator.jdbcTemplate.update(
+		    "update patient_appointment set status = ? where patient_appointment_id = ?", status, id);
 	}
 	
 	public  List<PatientAppointmentReminder> getPatientAppointmentReminderListBySmsStatus(){
@@ -250,8 +256,9 @@ public class BahminischedulingDao {
 	
 		 List<PatientAppointmentReminder> patientAppointmentReminderList=new ArrayList<PatientAppointmentReminder>();
 	
-		 jdbcTemplate.query(
-				 "SELECT * FROM  patient_appointment_reminder  where sms_status !='success' and appointment_service_id != 7", 
+		 BahminischedulingActivator.jdbcTemplate.query(
+//				 "SELECT * FROM  patient_appointment_reminder  where (sms_status_one_day !='success' or sms_status_seven_day != 'success') and appointment_service_id != 7", 
+				 "SELECT * FROM  patient_appointment_reminder  where ( (DATEDIFF(start_date_time,CURDATE()) = 1 and sms_status_one_day != 'success')  OR  (DATEDIFF(start_date_time,CURDATE()) = 7 and sms_status_seven_day != 'success') ) and appointment_service_id != 7",
 				 (rs, rowNum) -> new PatientAppointmentReminder(rs.getInt("id"),
 						 rs.getInt("patient_appointment_id"), 
 						 rs.getInt("patient_id"),
@@ -261,8 +268,8 @@ public class BahminischedulingDao {
 						 rs.getInt("appointment_service_type_id"),
 						 rs.getString("status"),
 						 rs.getString("consent"),
-						 rs.getString("sms_status")
-		                		
+						 rs.getString("sms_status_one_day"),
+						 rs.getString("sms_status_seven_day")		                		
 						 )
 				 )
 			
@@ -276,10 +283,10 @@ public class BahminischedulingDao {
 		try {
 			String sql = "insert into patient_appointment_reminder ( " + " id ," + " patient_appointment_id ,"
 			        + " patient_id , " + " start_date_time ," + " end_date_time , " + " appointment_service_id , "
-			        + " appointment_service_type_id ," + " status ," + " consent ,"
-			        + " sms_status ) values (?,?,?,?,?,?,?,?,?,?)";
+			        + " appointment_service_type_id ," + " status ," + " consent ," + " sms_status_one_day ,"
+			        + "sms_status_seven_day" + " ) values (?,?,?,?,?,?,?,?,?,?,?)";
 			
-			int[][] updateCounts = jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
+			int[][] updateCounts = BahminischedulingActivator.jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
 			    patientAppointmentReminderList.size(),
 			    
 			    new ParameterizedPreparedStatementSetter<PatientAppointmentReminder>() {
@@ -296,7 +303,8 @@ public class BahminischedulingDao {
 						    ps.setInt(7, patientAppointmentReminder.getAppointment_service_type_id());
 						    ps.setString(8, patientAppointmentReminder.getStatus());
 						    ps.setString(9, patientAppointmentReminder.getConsent());
-						    ps.setString(10, patientAppointmentReminder.getSms_status());
+						    ps.setString(10, patientAppointmentReminder.getSmsStatusOneDay());
+						    ps.setString(11, patientAppointmentReminder.getSmsStatusSevenDay());
 					    }
 					    catch (SQLException e) {
 						    // TODO Auto-generated catch block
@@ -320,7 +328,7 @@ public class BahminischedulingDao {
 
 		 PatientAppointmentReminder patientAppointmentReminder=new PatientAppointmentReminder();
 		  
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  patient_appointment_reminder order by patient_appointment_id DESC LIMIT 1    ", 
 				 (rs, rowNum) -> new PatientAppointmentReminder(rs.getInt("id"),
 						 rs.getInt("patient_appointment_id"), 
@@ -331,7 +339,8 @@ public class BahminischedulingDao {
 						 rs.getInt("appointment_service_type_id"),
 						 rs.getString("status"),
 						 rs.getString("consent"),
-						 rs.getString("sms_status")
+						 rs.getString("sms_status_one_day"),
+						 rs.getString("sms_status_seven_day")
 						 )
 				 )
 				 .forEach(patientAppointmentReminderTemp -> patientAppointmentReminderList.add(patientAppointmentReminderTemp));
@@ -360,7 +369,7 @@ public class BahminischedulingDao {
 
 		 PatientAppointmentReminder patientAppointmentReminder=new PatientAppointmentReminder();
 		  
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  patient_appointment_reminder order by id DESC LIMIT 1    ", 
 				 (rs, rowNum) -> new PatientAppointmentReminder(rs.getInt("id"),
 						 rs.getInt("patient_appointment_id"), 
@@ -371,7 +380,8 @@ public class BahminischedulingDao {
 						 rs.getInt("appointment_service_type_id"),
 						 rs.getString("status"),
 						 rs.getString("consent"),
-						 rs.getString("sms_status")
+						 rs.getString("sms_status_one_day"),
+						 rs.getString("sms_status_seven_day")
 						 )
 				 )
 				 .forEach(patientAppointmentReminderTemp -> patientAppointmentReminderList.add(patientAppointmentReminderTemp));
@@ -393,7 +403,7 @@ public class BahminischedulingDao {
 		try {
 			String sql = " update  patient_appointment_reminder " + "set sms_status='" + smsStatus + "'"
 			        + " where  patient_appointment_id = ? ";
-			int[][] updateCounts = jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
+			int[][] updateCounts = BahminischedulingActivator.jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
 			    patientAppointmentReminderList.size(),
 			    
 			    new ParameterizedPreparedStatementSetter<PatientAppointmentReminder>() {
@@ -420,7 +430,7 @@ public class BahminischedulingDao {
 	public  List<PersonAttribute> getPersonAttributeByPersonId(int id){
 		 System.out.println("METHOD : getPersonAttributeByPersonId  ");
 		 List<PersonAttribute> personAttributesList=new ArrayList<PersonAttribute>();	
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute where person_id = ?", 
 				 new Object[] { id },
 				 (rs, rowNum) -> new PersonAttribute(rs.getInt("person_attribute_id"), 
@@ -435,7 +445,7 @@ public class BahminischedulingDao {
 	public  PersonAttribute getConsentByPersonId(int id, int personAttTypeId){
 		 System.out.println("METHOD : getPersonAttributeByPersonId  ");
 		 List<PersonAttribute> personAttributesList=new ArrayList<PersonAttribute>();
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute where person_id = ? and person_attribute_type_id=?", 
 				 new Object[] { id,personAttTypeId },
 				 (rs, rowNum) -> new PersonAttribute(rs.getInt("person_attribute_id"), 
@@ -454,7 +464,7 @@ public class BahminischedulingDao {
 	public  List<PersonAttributeType> getPersonAttributeTypeById(int id){
 		 System.out.println("METHOD : getPersonAttributeTypeById  ");
 		 List<PersonAttributeType> personAttributeTypeList=new ArrayList<PersonAttributeType>();
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute_type where person_attribute_type_id = ?", 
 				 new Object[] { id },
 				 (rs, rowNum) -> new PersonAttributeType(rs.getInt("person_attribute_type_id"), 
@@ -471,7 +481,7 @@ public class BahminischedulingDao {
 	public PersonName getPersonNameByPersonId(int id){
 		 System.out.println("METHOD : getPersonNameByPersonId  ");		
 		 List<PersonName> personNameList=new ArrayList<PersonName>();	
-		 jdbcTemplate.query(
+		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  openmrs.person_name where person_id = ?", 
 				 new Object[] { id },
 				 (rs, rowNum) -> new PersonName(rs.getInt("person_name_id"), 
@@ -484,7 +494,81 @@ public class BahminischedulingDao {
 	 }
 	
 	public void insertIntoDataLoad() {
-		jdbcTemplate.execute(" INSERT INTO  data_load " + " (id, " + " data_loaded_check) " + " VALUES " + " ( 1, "
-		        + " 'NO') ");
+		BahminischedulingActivator.jdbcTemplate.execute(" INSERT INTO  data_load " + " (id, " + " data_loaded_check) "
+		        + " VALUES " + " ( 1, " + " 'NO') ");
+	}
+	
+	public SmsLanguage getSmsByLocaleAndDay(String locale, Integer day) {
+		System.out.println("METHOD : getDataLoaded  ");
+		List<SmsLanguage> smsLanguageList = new ArrayList<SmsLanguage>();
+		BahminischedulingActivator.jdbcTemplate.query(
+				 "SELECT * FROM sms_language where locale=? and day=?", 
+				 new Object[] { locale,day },
+				 (rs, rowNum) -> new SmsLanguage( 
+						 rs.getString("text_message"),
+						 rs.getString("locale"))
+				 )
+				 .forEach(objSms -> smsLanguageList.add(objSms));			  
+		 return smsLanguageList.get(0);
+	}
+	
+	public void updateSmsStatusOneDayByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
+	        String smsStatus) {
+		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId START");
+		try {
+			String sql = " update  patient_appointment_reminder " + "set sms_status_one_day='" + smsStatus + "'"
+			        + " where  patient_appointment_id = ? ";
+			int[][] updateCounts = BahminischedulingActivator.jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
+			    patientAppointmentReminderList.size(),
+			    
+			    new ParameterizedPreparedStatementSetter<PatientAppointmentReminder>() {
+				    
+				    @Override
+				    public void setValues(PreparedStatement ps, PatientAppointmentReminder patientAppointmentReminder) {
+					    try {
+						    ps.setInt(1, patientAppointmentReminder.getPatient_appointment_id());
+					    }
+					    catch (SQLException e) {
+						    // TODO Auto-generated catch block
+						    e.printStackTrace();
+					    }
+				    }
+			    });
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId End");
+	}
+	
+	public void updateSmsStatusSevenDayByPatientAppointmentId(
+	        List<PatientAppointmentReminder> patientAppointmentReminderList, String smsStatus) {
+		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId START");
+		try {
+			String sql = " update  patient_appointment_reminder " + "set sms_status_seven_day='" + smsStatus + "'"
+			        + " where  patient_appointment_id = ? ";
+			int[][] updateCounts = BahminischedulingActivator.jdbcTemplate.batchUpdate(sql, patientAppointmentReminderList,
+			    patientAppointmentReminderList.size(),
+			    
+			    new ParameterizedPreparedStatementSetter<PatientAppointmentReminder>() {
+				    
+				    @Override
+				    public void setValues(PreparedStatement ps, PatientAppointmentReminder patientAppointmentReminder) {
+					    try {
+						    ps.setInt(1, patientAppointmentReminder.getPatient_appointment_id());
+					    }
+					    catch (SQLException e) {
+						    // TODO Auto-generated catch block
+						    e.printStackTrace();
+					    }
+				    }
+			    });
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId End");
 	}
 }

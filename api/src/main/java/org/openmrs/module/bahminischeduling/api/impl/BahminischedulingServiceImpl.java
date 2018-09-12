@@ -24,9 +24,11 @@ import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
 import org.openmrs.module.bahminischeduling.PersonAttribute;
 import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
+import org.openmrs.module.bahminischeduling.SmsLanguage;
 import org.openmrs.module.bahminischeduling.api.BahminischedulingService;
 import org.openmrs.module.bahminischeduling.api.dao.BahminischedulingDao;
 import org.openmrs.module.bahminischeduling.twilio.IOutBoundService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.twilio.Twilio;
@@ -36,36 +38,14 @@ import com.twilio.type.PhoneNumber;
 @Service
 public class BahminischedulingServiceImpl extends BaseOpenmrsService implements BahminischedulingService {
 	
+	@Autowired
 	BahminischedulingDao dao;
-	
-	UserService userService;
 	
 	/**
 	 * Injected in moduleApplicationContext.xml
 	 */
 	public void setDao(BahminischedulingDao dao) {
 		this.dao = dao;
-	}
-	
-	/**
-	 * Injected in moduleApplicationContext.xml
-	 */
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-	
-	@Override
-	public Item getItemByUuid(String uuid) throws APIException {
-		return dao.getItemByUuid(uuid);
-	}
-	
-	@Override
-	public Item saveItem(Item item) throws APIException {
-		if (item.getOwner() == null) {
-			item.setOwner(userService.getUser(1));
-		}
-		
-		return dao.saveItem(item);
 	}
 	
 	@Override
@@ -214,5 +194,21 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 	
 	public void insertIntoDataLoad() {
 		dao.insertIntoDataLoad();
+	}
+	
+	public SmsLanguage getSmsByLocaleAndDay(String locale, Integer day) {
+		return dao.getSmsByLocaleAndDay(locale, day);
+	}
+	
+	@Override
+	public void updateSmsStatusOneDayByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
+	        String smsStatus) {
+		dao.updateSmsStatusOneDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
+	}
+	
+	@Override
+	public void updateSmsStatusSevenDayByPatientAppointmentId(
+	        List<PatientAppointmentReminder> patientAppointmentReminderList, String smsStatus) {
+		dao.updateSmsStatusSevenDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
 	}
 }

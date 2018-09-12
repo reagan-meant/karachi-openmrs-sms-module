@@ -48,6 +48,22 @@ public class CustomDate {
 		
 	}
 	
+	public static Date formatDateToSpecifiedFormat(Date date, String format) {
+		
+		System.out.println("METHOD : getDateInString  ");
+		Date resultDate = new Date();
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			
+			resultDate = sdf.parse(sdf.format(date));
+		}
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resultDate;
+	}
+	
 	public static Map<String, Integer> getDateTimeComponent(String dateTime) {
 		
 		System.out.println("METHOD : getDateTimeComponent dateTime=" + dateTime);

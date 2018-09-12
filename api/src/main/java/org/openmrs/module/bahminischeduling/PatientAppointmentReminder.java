@@ -1,5 +1,9 @@
 package org.openmrs.module.bahminischeduling;
 
+import java.util.Date;
+
+import org.joda.time.DateTime;
+
 public class PatientAppointmentReminder {
 	
 	private int id;
@@ -20,14 +24,16 @@ public class PatientAppointmentReminder {
 	
 	private String consent;
 	
-	private String sms_status;
+	private String smsStatusOneDay;
+	
+	private String smsStatusSevenDay;
 	
 	public PatientAppointmentReminder() {
 	}
 	
 	public PatientAppointmentReminder(int id, int patient_appointment_id, int patient_id, String start_date_time,
 	    String end_date_time, int appointment_service_id, int appointment_service_type_id, String status, String consent,
-	    String sms_status) {
+	    String smsStatusOneDay, String smsStatusSevenDay) {
 		super();
 		this.id = id;
 		this.patient_appointment_id = patient_appointment_id;
@@ -38,7 +44,8 @@ public class PatientAppointmentReminder {
 		this.appointment_service_type_id = appointment_service_type_id;
 		this.status = status;
 		this.consent = consent;
-		this.sms_status = sms_status;
+		this.smsStatusOneDay = smsStatusOneDay;
+		this.smsStatusSevenDay = smsStatusSevenDay;
 	}
 	
 	public int getId() {
@@ -113,12 +120,20 @@ public class PatientAppointmentReminder {
 		this.consent = consent;
 	}
 	
-	public String getSms_status() {
-		return sms_status;
+	public String getSmsStatusOneDay() {
+		return this.smsStatusOneDay;
 	}
 	
-	public void setSms_status(String sms_status) {
-		this.sms_status = sms_status;
+	public void setSmsStatusOneDay(String smsStatusOneDay) {
+		this.smsStatusOneDay = smsStatusOneDay;
+	}
+	
+	public String getSmsStatusSevenDay() {
+		return this.smsStatusSevenDay;
+	}
+	
+	public void setSmsStatusSevenDay(String smsStatusSevenDay) {
+		this.smsStatusSevenDay = smsStatusSevenDay;
 	}
 	
 }

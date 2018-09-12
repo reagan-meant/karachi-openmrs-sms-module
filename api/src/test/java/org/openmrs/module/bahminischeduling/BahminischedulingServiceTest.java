@@ -46,7 +46,7 @@ public class BahminischedulingServiceTest {
 	@Test
 	public void saveItem_shouldSetOwnerIfNotSet() {
 		//Given
-		Item item = new Item();
+		/*Item item = new Item();
 		item.setDescription("some description");
 		
 		when(dao.saveItem(item)).thenReturn(item);
@@ -58,6 +58,6 @@ public class BahminischedulingServiceTest {
 		basicModuleService.saveItem(item);
 		
 		//Then
-		assertThat(item, hasProperty("owner", is(user)));
+		assertThat(item, hasProperty("owner", is(user)));*/
 	}
 }

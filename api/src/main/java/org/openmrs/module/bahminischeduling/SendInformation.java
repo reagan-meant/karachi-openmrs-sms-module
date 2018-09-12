@@ -27,6 +27,10 @@ public class SendInformation {
 	
 	private String consent;
 	
+	private String smsStatusOneDay;
+	
+	private String smsStatusOneWeek;
+	
 	public String getContactNumber() {
 		return contactNumber;
 	}

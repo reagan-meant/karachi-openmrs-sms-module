@@ -71,9 +71,13 @@
 			<column name="consent" type="varchar(45)">
 				<constraints nullable="true"></constraints>
 			</column>			
-			<column name="sms_status" type="varchar(45)">
+			<column name="sms_status_one_day" type="varchar(45)">
 				<constraints nullable="true"></constraints>
 			</column>			
+			<column name="sms_status_seven_day" type="varchar(45)">
+				<constraints nullable="true"></constraints>
+			</column>			
+			
 		</createTable>
 	</changeSet>
 	
@@ -108,7 +112,7 @@
 			<column name="message" type="varchar(12000)">
 				<constraints nullable="true"></constraints>
 			</column>
-			<column name="patient_appointment_ids_one_day" type="varchar(20)">
+			<column name="patient_appointment_ids_one_day" type="varchar(45)">
 				<constraints nullable="true"></constraints>
 			</column>
 			<column name="patient_id" type="int(11)">
@@ -137,44 +141,91 @@
 			</column>			
 		</createTable>
 	</changeSet>
-<!-- 	<changeSet author="liquibase-docs" id="appt-reminder-log">
-    <sql
-            splitStatements="true"
-            stripComments="true">
-            CREATE TABLE 'appointment_reminder_log' (
-			  'id' int(11) NOT NULL AUTO_INCREMENT,
-			  'message' varchar(12000) DEFAULT NULL,
-			  'patient_appointment_ids_one_day' varchar(20) DEFAULT NULL,
-			  'patient_id' int(11) DEFAULT NULL,
-			  'sent_on' datetime DEFAULT NULL,
-			  'contactNumber' varchar(45) DEFAULT NULL,
-			  'messagesid' varchar(300) DEFAULT NULL,
-			  'messagingServiceSid' varchar(300) DEFAULT NULL,
-			  'error_code' int(11) DEFAULT NULL,
-			  'errorMessage' varchar(300) DEFAULT NULL,
-			  'patient_appointment_ids_one_week' varchar(45) DEFAULT NULL,
-			  PRIMARY KEY ('id')
-			)       
-	<comment>Create Patient Appointment reminder table</comment>
-    </sql>
-	</changeSet> --> 
+	
+	<changeSet author="liquibase-docs" id="language">
+	 	<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="sms_language"/></not>
+		</preConditions>
+		<comment>
+			Creating the sms_language table
+		</comment>
+		<createTable tableName="sms_language">
+			<column name="id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="text_message" type="varchar(200)">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="locale" type="varchar(50)">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="day" type="int">
+				<constraints nullable="false"></constraints>
+			</column>
+		</createTable>
+	</changeSet>
 	
 	<changeSet author="ABC" id="insert-to-scheduler-table">
-    <insert tableName="scheduler_task_config">
-        <column name="name" value="Bahmini SMS Scheduler"/>
-        <column name="description" value="Bahmini SMS Scheduler"/>
-        <column name="schedulable_class" value="org.openmrs.module.bahminischeduling.BahminiSmsScheduler"/>
-        <column name="start_time" value="2018-09-06 09:30:00"/>
-        <column name="start_time_pattern"/>
-        <column name="repeat_interval" value="10000"/>
-        <column name="start_on_startup" value="1"/>
-        <column name="started" value="1"/>
-        <column name="created_by" value="1"/>
-        <column name="date_created" value="2018-09-06 09:30:00"/>
-        <column name="changed_by" defaultValue="null"/>
-        <column name="date_changed" defaultValue="null"/>
-        <column name="last_execution_time" defaultValue="null"/>
-        <column name="uuid" value="uuid()"/>
-    </insert>
-</changeSet>
+    	<insert tableName="scheduler_task_config">
+	        <column name="name" value="Bahmini SMS Scheduler"/>
+	        <column name="description" value="Bahmini SMS Scheduler"/>
+	        <column name="schedulable_class" value="org.openmrs.module.bahminischeduling.BahminiSmsScheduler"/>
+	        <column name="start_time" value="2018-09-06 09:30:00"/>
+	        <column name="start_time_pattern"/>
+	        <column name="repeat_interval" value="10000"/>
+	        <column name="start_on_startup" value="1"/>
+	        <column name="started" value="1"/>
+	        <column name="created_by" value="1"/>
+	        <column name="date_created" value="2018-09-06 09:30:00"/>
+	        <column name="changed_by" defaultValue="null"/>
+	        <column name="date_changed" defaultValue="null"/>
+	        <column name="last_execution_time" defaultValue="null"/>
+	        <column name="uuid" value="uuid()"/>
+    	</insert>
+	</changeSet>
+	
+	<changeSet author="ABC" id="insert-to-sms-table">
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="U Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Urdu"/>
+	        <column name="day" valueNumeric="1"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="P Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Pashtu"/>
+	        <column name="day" valueNumeric="1"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="B Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Bengali"/>
+	        <column name="day" valueNumeric="1"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="S Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Sindhi"/>
+	        <column name="day" valueNumeric="1"/>
+	    </insert>
+	    
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="U Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Urdu"/>
+	        <column name="day" valueNumeric="7"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="P Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Pashtu"/>
+	        <column name="day" valueNumeric="7"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="B Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Bengali"/>
+	        <column name="day" valueNumeric="7"/>
+	    </insert>
+	    <insert tableName="sms_language">
+	        <column name="text_message" value="S Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="locale" value="Sindhi"/>
+	        <column name="day" valueNumeric="7"/>
+	    </insert>
+	</changeSet>
+	
 </databaseChangeLog>

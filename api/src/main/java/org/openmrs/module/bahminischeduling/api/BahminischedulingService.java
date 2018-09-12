@@ -24,6 +24,7 @@ import org.openmrs.module.bahminischeduling.PatientAppointmentReminder;
 import org.openmrs.module.bahminischeduling.PersonAttribute;
 import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
+import org.openmrs.module.bahminischeduling.SmsLanguage;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,32 +34,8 @@ import com.twilio.rest.api.v2010.account.Message;
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
-@Component
+//@Component("bahminischeduling.BahminischedulingService")
 public interface BahminischedulingService extends OpenmrsService {
-	
-	/**
-	 * Returns an item by uuid. It can be called by any authenticated user. It is fetched in read
-	 * only transaction.
-	 * 
-	 * @param uuid
-	 * @return
-	 * @throws APIException
-	 */
-	@Authorized()
-	@Transactional(readOnly = true)
-	Item getItemByUuid(String uuid) throws APIException;
-	
-	/**
-	 * Saves an item. Sets the owner to superuser, if it is not set. It can be called by users with
-	 * this module's privilege. It is executed in a transaction.
-	 * 
-	 * @param item
-	 * @return
-	 * @throws APIException
-	 */
-	@Authorized(BahminischedulingConfig.MODULE_PRIVILEGE)
-	@Transactional
-	Item saveItem(Item item) throws APIException;
 	
 	/**
 	 * Bahmini api
@@ -108,4 +85,13 @@ public interface BahminischedulingService extends OpenmrsService {
 	List<DataLoad> getDataLoaded();
 	
 	void insertIntoDataLoad();
+	
+	SmsLanguage getSmsByLocaleAndDay(String locale, Integer day);
+	
+	void updateSmsStatusOneDayByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
+	        String smsStatus);
+	
+	void updateSmsStatusSevenDayByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
+	        String smsStatus);
+	
 }

@@ -28,7 +28,7 @@
     <!-- Wraps BahminischedulingService methods in DB transactions and OpenMRS interceptors,
     which set audit info like dateCreated, changedBy, etc.-->
     
-    <bean id="bahminischeduling.BahminischedulingService"
+    <!-- <bean id="bahminischeduling.BahminischedulingService"
             class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />
@@ -44,28 +44,36 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource" />
         </property>
-    </bean>
+    </bean> -->
     
-    <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+   <!--  <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/openmrs" />
         <property name="username" value="root" />
         <property name="password" value="password" />
-    </bean>
+    </bean> -->
+    
+   <!--  <bean id="ds" class="org.springframework.jdbc.datasource.SingleConnectionDataSource" destroy-method="close"">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/openmrs" />
+        <property name="username" value="root" />
+        <property name="password" value="password" />
+        <property name="suppressClose">true />
+    </bean> -->
 
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="ds"/>
-    </bean>
+    </bean> -->
     
         
     <!-- Adds BahminischedulingService to OpenMRS context so it can be accessed
     calling Context.getService(BahminischedulingService.class) -->
-    <bean parent="serviceContext">
+    <!-- <bean parent="serviceContext">
         <property name="moduleService">
             <list>
                 <value>org.openmrs.module.bahminischeduling.api.BahminischedulingService</value>
                 <ref bean="bahminischeduling.BahminischedulingService" />
             </list>
         </property>
-    </bean>
+    </bean> -->
 </beans>
