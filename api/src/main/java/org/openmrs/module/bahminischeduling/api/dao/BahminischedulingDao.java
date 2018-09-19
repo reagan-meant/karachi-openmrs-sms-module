@@ -14,14 +14,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.openmrs.api.db.hibernate.DbSession;
-import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
 import org.openmrs.module.bahminischeduling.AppointmentService;
 import org.openmrs.module.bahminischeduling.BahminischedulingActivator;
@@ -35,7 +30,6 @@ import org.openmrs.module.bahminischeduling.PersonAttributeType;
 import org.openmrs.module.bahminischeduling.PersonName;
 import org.openmrs.module.bahminischeduling.SmsLanguage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.stereotype.Repository;
 
@@ -81,10 +75,6 @@ public class BahminischedulingDao {
 	
 	public   String getAppointmentServiceName(int appointmentServiceId)
 		{
-			  System.out.println("METHOD : getAppointmentServiceName  appointmentServiceId="+appointmentServiceId);
-	
-			  
-			  
 			  List<AppointmentService> appointmentServices=new ArrayList<AppointmentService>();
 	
 			  BahminischedulingActivator.jdbcTemplate.query(
@@ -113,8 +103,6 @@ public class BahminischedulingDao {
 	
 	public  ConceptName getConceptNameByConceptId(int conceptId)
 	 {
-		 System.out.println("METHOD : getConceptNameByConceptId  ");
-	
 		 List<ConceptName> conceptNameList=new ArrayList<ConceptName>();
 	
 		 BahminischedulingActivator.jdbcTemplate.query(
@@ -138,7 +126,6 @@ public class BahminischedulingDao {
 		 return conceptName ;
 	 }	public  String getDataLoadedCheck(){
 		 String dataLoadedCheck ="";
-		 System.out.println("METHOD : getDataLoadedCheck  ");
 		 List<DataLoad> dataLoadList=new ArrayList<DataLoad>();
 	
 		 BahminischedulingActivator.jdbcTemplate.query(
@@ -155,7 +142,6 @@ public class BahminischedulingDao {
 	 }
 	
 	public void updateDataLoadedCheckYes() {
-		System.out.println(" start updateDataLoadedCheckYes ");
 		BahminischedulingActivator.jdbcTemplate.update("update data_load set data_loaded_check = ? where id = ?", "YES", 1);
 	}
 	
@@ -168,7 +154,6 @@ public class BahminischedulingDao {
 	
 	public  List<DataLoad>  getDataLoaded(){
 		 String dataLoadedCheck ="";
-		 System.out.println("METHOD : getDataLoaded  ");
 		 
 		 List<DataLoad> dataLoadList=new ArrayList<DataLoad>();
 	
@@ -182,10 +167,6 @@ public class BahminischedulingDao {
 	 }
 	
 	public  List<PatientAppointment> getPatientAppointmentsByStatus(String status){
-		 LOGGER.info(" METHOD :  getPatientAppointmentsByStatus start");
-		 
-			  System.out.println("METHOD : query  ");
-	
 			  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
 	
 			  BahminischedulingActivator.jdbcTemplate.query(
@@ -205,19 +186,11 @@ public class BahminischedulingDao {
 			
 			  .forEach(patientApp -> patientAppList.add(patientApp) );
 			
-			  LOGGER.info(" METHOD :  getPatientAppointmentsByStatus End");
-			
 			  return patientAppList;
 		}
 	
 	public  List<PatientAppointment> getPatientAppointmentsGreaterThanPatientaAppointmentId(int patientAppointmentId , String status)
 		{
-			  System.out.println("METHOD : getPatientAppointmentsGreaterThanPatientaAppointmentId start patientAppointmentId="+patientAppointmentId);
-	
-			  LOGGER.info(" METHOD :  getPatientAppointmentsByStatus start");
-			  LOGGER.info(" METHOD :  getPatientAppointmentsByStatus patientAppointmentId="+patientAppointmentId);
-			  LOGGER.info(" METHOD :  getPatientAppointmentsByStatus status="+status);
-			 
 			  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
 	
 			  BahminischedulingActivator.jdbcTemplate.query(
@@ -237,23 +210,17 @@ public class BahminischedulingDao {
 			
 			  .forEach(patientApp -> patientAppList.add(patientApp) );
 			
-			
-			  LOGGER.info(" METHOD :  getPatientAppointmentsByStatus End");
-			  
 			  return patientAppList;
 		}
 	
 	public void updatePatientAppointment(int id, String status) {
 		
-		System.out.println(" start updatePatientAppointment ");
 		BahminischedulingActivator.jdbcTemplate.update(
 		    "update patient_appointment set status = ? where patient_appointment_id = ?", status, id);
 	}
 	
 	public  List<PatientAppointmentReminder> getPatientAppointmentReminderListBySmsStatus(){
 			 
-		 LOGGER.info("METHOD  : getPatientAppointmentReminderListBySmsStatus start ");
-	
 		 List<PatientAppointmentReminder> patientAppointmentReminderList=new ArrayList<PatientAppointmentReminder>();
 	
 		 BahminischedulingActivator.jdbcTemplate.query(
@@ -274,12 +241,10 @@ public class BahminischedulingDao {
 				 )
 			
 				 .forEach(conceptName -> patientAppointmentReminderList.add(conceptName));	
-		 LOGGER.info("METHOD  : getPatientAppointmentReminderListBySmsStatus End ");
 		 return patientAppointmentReminderList;
 	 }
 	
 	public void insert(List<PatientAppointmentReminder> patientAppointmentReminderList) {
-		LOGGER.info("METHOD  : insert start ");
 		try {
 			String sql = "insert into patient_appointment_reminder ( " + " id ," + " patient_appointment_id ,"
 			        + " patient_id , " + " start_date_time ," + " end_date_time , " + " appointment_service_id , "
@@ -314,16 +279,12 @@ public class BahminischedulingDao {
 			    });
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LOGGER.info("METHOD  : insert End ");
 	}
 	
 	public PatientAppointmentReminder  getPatientAppointmentReminderByMaxValueOfPatientAppointmentId()
 	 {
-		 LOGGER.info("METHOD  : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId start "); 
-		 System.out.println("METHOD : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId  ");			
 		 List<PatientAppointmentReminder> patientAppointmentReminderList=new ArrayList<PatientAppointmentReminder>();
 
 		 PatientAppointmentReminder patientAppointmentReminder=new PatientAppointmentReminder();
@@ -346,25 +307,19 @@ public class BahminischedulingDao {
 				 .forEach(patientAppointmentReminderTemp -> patientAppointmentReminderList.add(patientAppointmentReminderTemp));
 
 		 if(patientAppointmentReminderList.size()>0)
-		 { System.out.println("METHOD : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId  patientAppointmentReminderList.size()="+patientAppointmentReminderList.size() );
-			  
+		 { 
 		 patientAppointmentReminder = patientAppointmentReminderList.get(0);
 		    
-		 System.out.println("METHOD : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId  maXID="+patientAppointmentReminder.getPatient_appointment_id());
-		 LOGGER.info("METHOD  : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId maXID="+patientAppointmentReminder.getPatient_appointment_id() );
 		 return patientAppointmentReminder ;
 		 }
 		 else
-		 { LOGGER.info("METHOD  : getPatientAppointmentReminderByMaxValueOfPatientAppointmentId End ");
+		 { 
 		 return patientAppointmentReminder ;
 		 }	 
 	 }
 	
 	public PatientAppointmentReminder  getPatientAppointmentReminderByMaxValueId()
 	 {
-		 LOGGER.info(" METHOD :  getPatientAppointmentReminderByMaxValueId start");
-		 System.out.println("METHOD : getLastPatientAppointmentId  ");
-			
 		 List<PatientAppointmentReminder> patientAppointmentReminderList=new ArrayList<PatientAppointmentReminder>();
 
 		 PatientAppointmentReminder patientAppointmentReminder=new PatientAppointmentReminder();
@@ -388,18 +343,15 @@ public class BahminischedulingDao {
 		 if(patientAppointmentReminderList.size()>0)
 		 {
 			 patientAppointmentReminder = patientAppointmentReminderList.get(0);   
-			 LOGGER.info(" METHOD :  getPatientAppointmentReminderByMaxValueId END");
 			 return patientAppointmentReminder ;
 		 }
 		 else{
-			 LOGGER.info(" METHOD :  getPatientAppointmentReminderByMaxValueId END");
 			 return patientAppointmentReminder ;
 		 }	 
 	 }
 	
 	public void updateSmsStatusByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
 	        String smsStatus) {
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId START");
 		try {
 			String sql = " update  patient_appointment_reminder " + "set sms_status='" + smsStatus + "'"
 			        + " where  patient_appointment_id = ? ";
@@ -414,21 +366,17 @@ public class BahminischedulingDao {
 						    ps.setInt(1, patientAppointmentReminder.getPatient_appointment_id());
 					    }
 					    catch (SQLException e) {
-						    // TODO Auto-generated catch block
 						    e.printStackTrace();
 					    }
 				    }
 			    });
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId End");
 	}
 	
 	public  List<PersonAttribute> getPersonAttributeByPersonId(int id){
-		 System.out.println("METHOD : getPersonAttributeByPersonId  ");
 		 List<PersonAttribute> personAttributesList=new ArrayList<PersonAttribute>();	
 		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute where person_id = ?", 
@@ -443,7 +391,6 @@ public class BahminischedulingDao {
 	 }
 	
 	public  PersonAttribute getConsentByPersonId(int id, int personAttTypeId){
-		 System.out.println("METHOD : getPersonAttributeByPersonId  ");
 		 List<PersonAttribute> personAttributesList=new ArrayList<PersonAttribute>();
 		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute where person_id = ? and person_attribute_type_id=?", 
@@ -458,11 +405,9 @@ public class BahminischedulingDao {
 	 }
 	
 	public void updatePersonAttributet(int id, String status) {
-		System.out.println(" start updatePersonAttributet ");
 	}
 	
 	public  List<PersonAttributeType> getPersonAttributeTypeById(int id){
-		 System.out.println("METHOD : getPersonAttributeTypeById  ");
 		 List<PersonAttributeType> personAttributeTypeList=new ArrayList<PersonAttributeType>();
 		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  person_attribute_type where person_attribute_type_id = ?", 
@@ -479,7 +424,6 @@ public class BahminischedulingDao {
 	 }
 	
 	public PersonName getPersonNameByPersonId(int id){
-		 System.out.println("METHOD : getPersonNameByPersonId  ");		
 		 List<PersonName> personNameList=new ArrayList<PersonName>();	
 		 BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM  openmrs.person_name where person_id = ?", 
@@ -499,7 +443,6 @@ public class BahminischedulingDao {
 	}
 	
 	public SmsLanguage getSmsByLocaleAndDay(String locale, Integer day) {
-		System.out.println("METHOD : getDataLoaded  ");
 		List<SmsLanguage> smsLanguageList = new ArrayList<SmsLanguage>();
 		BahminischedulingActivator.jdbcTemplate.query(
 				 "SELECT * FROM sms_language where locale=? and day=?", 
@@ -514,7 +457,6 @@ public class BahminischedulingDao {
 	
 	public void updateSmsStatusOneDayByPatientAppointmentId(List<PatientAppointmentReminder> patientAppointmentReminderList,
 	        String smsStatus) {
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId START");
 		try {
 			String sql = " update  patient_appointment_reminder " + "set sms_status_one_day='" + smsStatus + "'"
 			        + " where  patient_appointment_id = ? ";
@@ -529,22 +471,18 @@ public class BahminischedulingDao {
 						    ps.setInt(1, patientAppointmentReminder.getPatient_appointment_id());
 					    }
 					    catch (SQLException e) {
-						    // TODO Auto-generated catch block
 						    e.printStackTrace();
 					    }
 				    }
 			    });
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId End");
 	}
 	
 	public void updateSmsStatusSevenDayByPatientAppointmentId(
 	        List<PatientAppointmentReminder> patientAppointmentReminderList, String smsStatus) {
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId START");
 		try {
 			String sql = " update  patient_appointment_reminder " + "set sms_status_seven_day='" + smsStatus + "'"
 			        + " where  patient_appointment_id = ? ";
@@ -566,9 +504,7 @@ public class BahminischedulingDao {
 			    });
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LOGGER.info(" METHOD :  updateSmsStatusByPatientAppointmentId End");
 	}
 }

@@ -1,11 +1,7 @@
 package org.openmrs.module.bahminischeduling.twilio;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahminischeduling.twilio.IOutBoundService;
+import org.springframework.stereotype.Component;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -15,9 +11,6 @@ import com.twilio.type.PhoneNumber;
 public class OutBoundService implements IOutBoundService {
 	
 	public Message sendSmsService(String toNumber, String textMessage) {
-		
-		System.out.println("METHOD : sendSmsService start toNumber=" + toNumber + "----textMessage=" + textMessage);
-		
 		Message message = null;
 		
 		try {
@@ -29,8 +22,6 @@ public class OutBoundService implements IOutBoundService {
 			
 		}
 		catch (Exception e) {
-			// TODO: handle exception
-			
 			e.printStackTrace();
 		}
 		
