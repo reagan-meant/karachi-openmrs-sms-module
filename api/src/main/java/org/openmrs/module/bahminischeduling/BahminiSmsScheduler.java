@@ -421,9 +421,6 @@ public class BahminiSmsScheduler extends AbstractTask {
 			service.insert(patientAppointmentReminderList);
 			patientAppointmentReminderList = null;
 		}
-		/**
-		 * TODO: update data load with NO
-		 ***/
 		else {
 			service.updateDataLoadedCheckNo();
 		}
