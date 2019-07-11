@@ -145,6 +145,10 @@ public class BahminischedulingDao {
 		BahminischedulingActivator.jdbcTemplate.update("update data_load set data_loaded_check = ? where id = ?", "YES", 1);
 	}
 	
+	public void updateDataLoadedCheckNo() {
+		BahminischedulingActivator.jdbcTemplate.update("update data_load set data_loaded_check = ? where id = ?", "NO", 1);
+	}
+	
 	public void insertDataLoadedCheckYes() {
 		BahminischedulingActivator.jdbcTemplate.update("INSERT INTO data_load ( id,  data_loaded_check )" + " VALUES (?,?)",
 		    1, "YES"

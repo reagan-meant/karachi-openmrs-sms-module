@@ -71,6 +71,11 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 	}
 	
 	@Override
+	public void updateDataLoadedCheckNo() {
+		dao.updateDataLoadedCheckNo();
+	}
+	
+	@Override
 	public void insertDataLoadedCheckYes() {
 		dao.insertDataLoadedCheckYes();
 	}

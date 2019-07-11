@@ -17,6 +17,8 @@ public interface IOutBoundService {
 	
 	public static final String AUTH_TOKEN = "authToken";
 	
+	public static final String COUNTRY_CODE = "countryCode";
+	
 	public Message sendSmsService(String toNumber, String textMessage);
 	
 }

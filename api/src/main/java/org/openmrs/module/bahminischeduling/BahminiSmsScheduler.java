@@ -10,8 +10,10 @@ import org.apache.commons.logging.LogFactory;
 //import org.apache.log4j.log;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahminischeduling.api.BahminischedulingService;
 import org.openmrs.module.bahminischeduling.template.LanguageTemplate;
+import org.openmrs.module.bahminischeduling.twilio.IOutBoundService;
 import org.openmrs.module.bahminischeduling.twilio.OutBoundService;
 import org.openmrs.module.bahminischeduling.utilities.CustomDate;
 import org.openmrs.scheduler.tasks.AbstractTask;
@@ -204,53 +206,58 @@ public class BahminiSmsScheduler extends AbstractTask {
 			
 			String contactNumberTemp = "";
 			contactNumberTemp = sendInformation.getContactNumber().replaceAll("-", "");
-			contactNumberTemp = contactNumberTemp.replaceFirst("0", "+92");
+			contactNumberTemp = contactNumberTemp.replaceFirst("0",
+			    Context.getAdministrationService().getGlobalProperty(IOutBoundService.COUNTRY_CODE));
 			
 			sendInformation.setContactNumber(contactNumberTemp);
 			
 			Message messageResponse = service.sendSmsService(sendInformation.getContactNumber(),
 			    sendInformation.getOneDayMessage());
 			
-			List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
-			
-			sendInformation.setOneDayMessage(startOneDayMessage + " " + sendInformation.getOneDayMessage());
-			
-			appointmentReminderLog = new AppointmentReminderLog();
-			appointmentReminderLog.setMessage(sendInformation.getOneDayMessage());
-			
 			if (messageResponse != null) {
-				if (messageResponse.getSid() != null) {
-					appointmentReminderLog.setMessagesid(messageResponse.getSid());
-				}
-				if (messageResponse.getMessagingServiceSid() != null) {
-					appointmentReminderLog.setMessagingServiceSid(messageResponse.getMessagingServiceSid());
-				}
-				if (messageResponse.getErrorCode() != null) {
-					appointmentReminderLog.setError_code(messageResponse.getErrorCode());
-					smsStatus = messageResponse.getErrorCode().toString();
-				}
+				List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
 				
-				if (messageResponse.getErrorMessage() != null) {
-					appointmentReminderLog.setErrorMessage(messageResponse.getErrorMessage());
+				sendInformation.setOneDayMessage(startOneDayMessage + " " + sendInformation.getOneDayMessage());
+				
+				appointmentReminderLog = new AppointmentReminderLog();
+				appointmentReminderLog.setMessage(sendInformation.getOneDayMessage());
+				
+				if (messageResponse != null) {
+					if (messageResponse.getSid() != null) {
+						appointmentReminderLog.setMessagesid(messageResponse.getSid());
+					}
+					if (messageResponse.getMessagingServiceSid() != null) {
+						appointmentReminderLog.setMessagingServiceSid(messageResponse.getMessagingServiceSid());
+					}
+					if (messageResponse.getErrorCode() != null) {
+						appointmentReminderLog.setError_code(messageResponse.getErrorCode());
+						smsStatus = messageResponse.getErrorCode().toString();
+					}
+					
+					if (messageResponse.getErrorMessage() != null) {
+						appointmentReminderLog.setErrorMessage(messageResponse.getErrorMessage());
+					}
 				}
-			}
-			appointmentReminderLog.setContactNumber(sendInformation.getContactNumber());
-			appointmentReminderLog.setPatient_id(sendInformation.getPatientId());
-			appointmentReminderLog.setSent_on(CustomDate.getCurrentDateInString(CustomDate.DATE_FORMAT_YYYY_MM_DD));
-			appointmentReminderLog.setPatient_appointment_ids_one_day(sendInformation.getPatientAppointmentIdsForOneDay());
-			service.insert(appointmentReminderLog);
-			
-			List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation.getPatientAppointmentIdsForOneDay());
-			
-			for (Integer pAId : patientAIdsAL) {
-				PatientAppointmentReminder patientAppointmentReminder = new PatientAppointmentReminder();
-				patientAppointmentReminder.setPatient_appointment_id(pAId.intValue());
-				patientAppointmentReminder.setStatus(smsStatus);
-				patientAppointmentReminderList.add(patientAppointmentReminder);
-				patientAppointmentReminder = null;
-			}
-			if (messageResponse.getErrorCode() == null) {
-				service.updateSmsStatusOneDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
+				appointmentReminderLog.setContactNumber(sendInformation.getContactNumber());
+				appointmentReminderLog.setPatient_id(sendInformation.getPatientId());
+				appointmentReminderLog.setSent_on(CustomDate.getCurrentDateInString(CustomDate.DATE_FORMAT_YYYY_MM_DD));
+				appointmentReminderLog.setPatient_appointment_ids_one_day(sendInformation
+				        .getPatientAppointmentIdsForOneDay());
+				service.insert(appointmentReminderLog);
+				
+				List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation
+				        .getPatientAppointmentIdsForOneDay());
+				
+				for (Integer pAId : patientAIdsAL) {
+					PatientAppointmentReminder patientAppointmentReminder = new PatientAppointmentReminder();
+					patientAppointmentReminder.setPatient_appointment_id(pAId.intValue());
+					patientAppointmentReminder.setStatus(smsStatus);
+					patientAppointmentReminderList.add(patientAppointmentReminder);
+					patientAppointmentReminder = null;
+				}
+				if (messageResponse.getErrorCode() == null) {
+					service.updateSmsStatusOneDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
+				}
 			}
 		}
 		
@@ -260,50 +267,56 @@ public class BahminiSmsScheduler extends AbstractTask {
 			if (sendInformation.getContactNumber().contains("-")) {
 				String contactNumberTemp = "";
 				contactNumberTemp = sendInformation.getContactNumber().replaceAll("-", "");
-				contactNumberTemp = contactNumberTemp.replaceFirst("0", "+92");
+				contactNumberTemp = contactNumberTemp.replaceFirst("0", Context.getAdministrationService()
+				        .getGlobalProperty(IOutBoundService.COUNTRY_CODE));
 				sendInformation.setContactNumber(contactNumberTemp);
 			}
 			Message messageResponse = service.sendSmsService(sendInformation.getContactNumber(),
 			    sendInformation.getOneWeekMessage());
-			List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
-			appointmentReminderLog = new AppointmentReminderLog();
-			appointmentReminderLog.setMessage(sendInformation.getOneWeekMessage());
 			
 			if (messageResponse != null) {
-				if (messageResponse.getSid() != null) {
-					appointmentReminderLog.setMessagesid(messageResponse.getSid());
+				List<PatientAppointmentReminder> patientAppointmentReminderList = new ArrayList<PatientAppointmentReminder>();
+				appointmentReminderLog = new AppointmentReminderLog();
+				appointmentReminderLog.setMessage(sendInformation.getOneWeekMessage());
+				
+				if (messageResponse != null) {
+					if (messageResponse.getSid() != null) {
+						appointmentReminderLog.setMessagesid(messageResponse.getSid());
+					}
+					if (messageResponse.getMessagingServiceSid() != null) {
+						appointmentReminderLog.setMessagingServiceSid(messageResponse.getMessagingServiceSid());
+					}
+					if (messageResponse.getErrorCode() != null) {
+						log.debug("METHOD  : sendSmsAndLogging getOneWeekMessage messageResponse.getErrorCode()="
+						        + messageResponse.getErrorCode());
+						appointmentReminderLog.setError_code(messageResponse.getErrorCode());
+						smsStatus = messageResponse.getErrorCode().toString();
+					}
+					if (messageResponse.getErrorMessage() != null) {
+						appointmentReminderLog.setErrorMessage(messageResponse.getErrorMessage());
+					}
 				}
-				if (messageResponse.getMessagingServiceSid() != null) {
-					appointmentReminderLog.setMessagingServiceSid(messageResponse.getMessagingServiceSid());
+				appointmentReminderLog.setContactNumber(sendInformation.getContactNumber());
+				appointmentReminderLog.setPatient_id(sendInformation.getPatientId());
+				appointmentReminderLog.setSent_on(CustomDate
+				        .getCurrentDateTimeInString(CustomDate.DATE_FORMAT_YYYY_MM_DD_HH_MM_SS));
+				appointmentReminderLog.setPatient_appointment_ids_one_week(sendInformation
+				        .getPatientAppointmentIdsForOneWeek());
+				service.insert(appointmentReminderLog);
+				
+				List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation
+				        .getPatientAppointmentIdsForOneWeek());
+				
+				for (Integer pAId : patientAIdsAL) {
+					PatientAppointmentReminder patientAppointmentReminder = new PatientAppointmentReminder();
+					patientAppointmentReminder.setPatient_appointment_id(pAId.intValue());
+					patientAppointmentReminder.setStatus(smsStatus);
+					patientAppointmentReminderList.add(patientAppointmentReminder);
+					patientAppointmentReminder = null;
 				}
-				if (messageResponse.getErrorCode() != null) {
-					log.debug("METHOD  : sendSmsAndLogging getOneWeekMessage messageResponse.getErrorCode()="
-					        + messageResponse.getErrorCode());
-					appointmentReminderLog.setError_code(messageResponse.getErrorCode());
-					smsStatus = messageResponse.getErrorCode().toString();
+				if (messageResponse.getErrorCode() == null) {
+					service.updateSmsStatusSevenDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
 				}
-				if (messageResponse.getErrorMessage() != null) {
-					appointmentReminderLog.setErrorMessage(messageResponse.getErrorMessage());
-				}
-			}
-			appointmentReminderLog.setContactNumber(sendInformation.getContactNumber());
-			appointmentReminderLog.setPatient_id(sendInformation.getPatientId());
-			appointmentReminderLog.setSent_on(CustomDate
-			        .getCurrentDateTimeInString(CustomDate.DATE_FORMAT_YYYY_MM_DD_HH_MM_SS));
-			appointmentReminderLog.setPatient_appointment_ids_one_week(sendInformation.getPatientAppointmentIdsForOneWeek());
-			service.insert(appointmentReminderLog);
-			
-			List<Integer> patientAIdsAL = getPatientAppointmentIdsList(sendInformation.getPatientAppointmentIdsForOneWeek());
-			
-			for (Integer pAId : patientAIdsAL) {
-				PatientAppointmentReminder patientAppointmentReminder = new PatientAppointmentReminder();
-				patientAppointmentReminder.setPatient_appointment_id(pAId.intValue());
-				patientAppointmentReminder.setStatus(smsStatus);
-				patientAppointmentReminderList.add(patientAppointmentReminder);
-				patientAppointmentReminder = null;
-			}
-			if (messageResponse.getErrorCode() == null) {
-				service.updateSmsStatusSevenDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
 			}
 		}
 	}
@@ -407,6 +420,12 @@ public class BahminiSmsScheduler extends AbstractTask {
 			}
 			service.insert(patientAppointmentReminderList);
 			patientAppointmentReminderList = null;
+		}
+		/**
+		 * TODO: update data load with NO
+		 ***/
+		else {
+			service.updateDataLoadedCheckNo();
 		}
 	}
 	

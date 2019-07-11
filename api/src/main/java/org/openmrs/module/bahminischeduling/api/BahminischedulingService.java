@@ -51,6 +51,8 @@ public interface BahminischedulingService extends OpenmrsService {
 	
 	void updateDataLoadedCheckYes();
 	
+	void updateDataLoadedCheckNo();
+	
 	void insertDataLoadedCheckYes();
 	
 	List<PatientAppointment> getPatientAppointmentsByStatus(String status);

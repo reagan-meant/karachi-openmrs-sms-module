@@ -121,16 +121,23 @@
 		</description>
 	</globalProperty>
 	
-		<globalProperty>
+	<globalProperty>
 		<property>accountSid</property>
 		<defaultValue>AC81d2a1a6edf0c9180b73cb60940aa930</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
 	
-		<globalProperty>
+	<globalProperty>
 		<property>authToken</property>
 		<defaultValue>dcceb8cec790b9e9db5a31c471acb6de</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>countryCode</property>
+		<defaultValue>+92</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
