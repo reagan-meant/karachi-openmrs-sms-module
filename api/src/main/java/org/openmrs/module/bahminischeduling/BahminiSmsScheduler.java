@@ -1,5 +1,6 @@
 package org.openmrs.module.bahminischeduling;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,9 @@ public class BahminiSmsScheduler extends AbstractTask {
 		List<PatientAppointmentReminder> patientAppointmentReminderList = service
 		        .getPatientAppointmentReminderListBySmsStatus();
 		List<PatientAppointment> patientAppointmentList = getPatientAppointmentDataFromReminders(patientAppointmentReminderList);
+		
+		SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat desiredFormat = new SimpleDateFormat("dd-MMMM-yyyy hh:mm a");
 		
 		log.info("***************** Running SMS scheduler for " + patientAppointmentReminderList.size()
 		        + " SMSes ***********");
@@ -105,12 +109,33 @@ public class BahminiSmsScheduler extends AbstractTask {
 							
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 1)
 							        .getTextMessage();
-							tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-							        .getStart_date_time().toString());
-							tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-							        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-							                .getAppointment_service_id()));
-							messageOneDay = messageOneDay + " " + tempMessage;
+							try {
+								tempMessage = tempMessage.replaceAll(
+								    "DATE",
+								    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								            .getStart_date_time().toString())));
+							}
+							catch (Exception e) {
+								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
+								        .getStart_date_time().toString());
+							}
+							
+							try {
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getAdministrationService().getGlobalProperty(
+								        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								                .getAppointment_service_id())));
+							}
+							catch (Exception e) {
+								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
+								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								                .getAppointment_service_id()));
+							}
+							tempMessage = tempMessage.concat("\n"
+							        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							                .getStart_date_time().toString())));
+							messageOneDay = messageOneDay + "\n\n" + tempMessage;
 						} else if (checkDateForOneWeek(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
 							specificPatientAppointmentListForSendSmsForOneWeek.add(specificPatientAppointmentList.get(i));
 							log.debug("METHOD  : sendSMSForAppointment true for oneweek  checkDateForOneWeek(specificPatientAppointmentList.get(i).getStart_date_time()) condition is true now inside it  ");
@@ -119,12 +144,33 @@ public class BahminiSmsScheduler extends AbstractTask {
 							
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 7)
 							        .getTextMessage();
-							tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-							        .getStart_date_time().toString());
-							tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-							        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-							                .getAppointment_service_id()));
-							messageOneWeek = messageOneWeek + " " + tempMessage;
+							
+							try {
+								tempMessage = tempMessage.replaceAll(
+								    "DATE",
+								    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								            .getStart_date_time().toString())));
+							}
+							catch (Exception e) {
+								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
+								        .getStart_date_time().toString());
+							}
+							try {
+								tempMessage = tempMessage.replaceAll(
+								    "APPOINTMENT_SERVICE",
+								    Context.getAdministrationService().getGlobalProperty(
+								        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								                .getAppointment_service_id())));
+							}
+							catch (Exception e) {
+								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
+								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								                .getAppointment_service_id()));
+							}
+							tempMessage = tempMessage.concat("\n"
+							        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							                .getStart_date_time().toString())));
+							messageOneWeek = messageOneWeek + "\n\n" + tempMessage;
 						}
 					}
 					sendInformation.setPatientAppointmentIdsForOneDay(patientAppointmentIdsForOneDay.trim());
@@ -420,8 +466,7 @@ public class BahminiSmsScheduler extends AbstractTask {
 			}
 			service.insert(patientAppointmentReminderList);
 			patientAppointmentReminderList = null;
-		}
-		else {
+		} else {
 			service.updateDataLoadedCheckNo();
 		}
 	}

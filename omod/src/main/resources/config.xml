@@ -141,5 +141,41 @@
 		<description>
 		</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>Doctor Consultation</property>
+		<defaultValue>ڈاکٹر سے مشاورت</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>Follow-up Nurse Consultation</property>
+		<defaultValue>نرس کے ساتھ فالو اپ مشاورت</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>Patient Support</property>
+		<defaultValue>مریضوں کی مدد</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>Family Planning</property>
+		<defaultValue>خاندانی منصوبہ بندی</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>Lab sample collection</property>
+		<defaultValue>لیب کے نمونے جمع کرنا</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
 </module>
 
