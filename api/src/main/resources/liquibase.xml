@@ -142,6 +142,12 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet author="liquibase-docs" id="dropTable-ABC">
+	    <preConditions onFail="MARK_RAN"><tableExists tableName="sms_language"/></preConditions>
+	    <dropTable cascadeConstraints="true"
+	            tableName="sms_language"/>
+	</changeSet>
+
 	<changeSet author="liquibase-docs" id="language">
 	 	<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="sms_language"/></not>
@@ -187,44 +193,45 @@
 	<changeSet author="ABC" id="insert-to-sms-table">
 		    <insert tableName="sms_language">
 	        <!-- <column name="text_message" value=" پر مقرر ہے (DATE) APPOINTMENT_SERVICE کے لئے تقرری "/> -->
-	        <column name="text_message" value="آپ کی 'APPOINTMENT_SERVICE' کے لئے ملاقات مندرجہ ذیل تاریخ پر طے شدہ ہے"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات مندرجہ ذیل تاریخ پر طےشدہ ہے"/>
 	        <column name="locale" value="Urdu"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Pashtu"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Bengali"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Sindhi"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	
 	    <insert tableName="sms_language">
 	        <!-- <column name="text_message" value=" پر مقرر ہے (DATE) APPOINTMENT_SERVICE کے لئے تقرری "/> -->
-         	<column name="text_message" value="آپ کی 'APPOINTMENT_SERVICE' کے لئے ملاقات مندرجہ ذیل تاریخ پر طے شدہ ہے"/>
+         	<!-- <column name="text_message" value="آپ کی 'APPOINTMENT_SERVICE' کے لئے ملاقات مندرجہ ذیل تاریخ پر طے شدہ ہے"/> -->
+         	<column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات مندرجہ ذیل تاریخ پر طےشدہ ہے"/>
 	        <column name="locale" value="Urdu"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Pashtu"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Bengali"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Appointment SCHEDULED ON DATE FOR APPOINTMENT_SERVICE"/>
+	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
 	        <column name="locale" value="Sindhi"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>

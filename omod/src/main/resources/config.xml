@@ -177,5 +177,19 @@
 		</description>
 	</globalProperty>
 	
+	<globalProperty>
+		<property>smsTitleEnglish</property>
+		<defaultValue>MSF Clinic</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>smsTitleUrdu</property>
+		<defaultValue>ایم ایس ایف کلینک</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
 </module>
 

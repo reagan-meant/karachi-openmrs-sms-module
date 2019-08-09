@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 //import org.apache.log4j.log;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahminischeduling.api.BahminischedulingService;
 import org.openmrs.module.bahminischeduling.template.LanguageTemplate;
@@ -109,32 +110,60 @@ public class BahminiSmsScheduler extends AbstractTask {
 							
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 1)
 							        .getTextMessage();
-							try {
-								tempMessage = tempMessage.replaceAll(
-								    "DATE",
-								    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								            .getStart_date_time().toString())));
-							}
-							catch (Exception e) {
-								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-								        .getStart_date_time().toString());
-							}
-							
-							try {
-								tempMessage = tempMessage.replaceAll(
-								    "APPOINTMENT_SERVICE",
-								    Context.getAdministrationService().getGlobalProperty(
-								        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id())));
-							}
-							catch (Exception e) {
+							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
+								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								            .getAppointment_service_id()));
+								if (aptNameGp != null && !aptNameGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replaceAll(
+										    "سروس",
+										    Context.getAdministrationService().getGlobalProperty(
+										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+										                .getAppointment_service_id())));
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								tempMessage = tempMessage.concat("\n"
+								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								                .getStart_date_time().toString())));
+							} else {
+								try {
+									tempMessage = tempMessage.replaceAll(
+									    "DATE",
+									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+									            .getStart_date_time().toString())));
+								}
+								catch (Exception e) {
+									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
+									        .getStart_date_time().toString());
+								}
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("Title", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
 								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
 								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
 								                .getAppointment_service_id()));
+								
 							}
-							tempMessage = tempMessage.concat("\n"
-							        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-							                .getStart_date_time().toString())));
 							messageOneDay = messageOneDay + "\n\n" + tempMessage;
 						} else if (checkDateForOneWeek(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
 							specificPatientAppointmentListForSendSmsForOneWeek.add(specificPatientAppointmentList.get(i));
@@ -145,31 +174,59 @@ public class BahminiSmsScheduler extends AbstractTask {
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 7)
 							        .getTextMessage();
 							
-							try {
-								tempMessage = tempMessage.replaceAll(
-								    "DATE",
-								    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								            .getStart_date_time().toString())));
-							}
-							catch (Exception e) {
-								tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-								        .getStart_date_time().toString());
-							}
-							try {
-								tempMessage = tempMessage.replaceAll(
-								    "APPOINTMENT_SERVICE",
-								    Context.getAdministrationService().getGlobalProperty(
-								        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id())));
-							}
-							catch (Exception e) {
+							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
+								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								            .getAppointment_service_id()));
+								if (aptNameGp != null && !aptNameGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replaceAll(
+										    "سروس",
+										    Context.getAdministrationService().getGlobalProperty(
+										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+										                .getAppointment_service_id())));
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								tempMessage = tempMessage.concat("\n"
+								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								                .getStart_date_time().toString())));
+							} else {
+								try {
+									tempMessage = tempMessage.replaceAll(
+									    "DATE",
+									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+									            .getStart_date_time().toString())));
+								}
+								catch (Exception e) {
+									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
+									        .getStart_date_time().toString());
+								}
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("Title", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
 								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
 								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
 								                .getAppointment_service_id()));
 							}
-							tempMessage = tempMessage.concat("\n"
-							        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-							                .getStart_date_time().toString())));
 							messageOneWeek = messageOneWeek + "\n\n" + tempMessage;
 						}
 					}
