@@ -281,9 +281,19 @@ public class BahminiSmsScheduler extends AbstractTask {
 				break;
 			}
 		}
-		ConceptName conceptNameForLanguage = service.getConceptNameByConceptId(Integer.parseInt(preferredLanguageConceptId
-		        .trim()));
-		preferredLanguageName = conceptNameForLanguage.getName();
+		try {
+			if (preferredLanguageConceptId != null && !preferredLanguageConceptId.isEmpty()) {
+				ConceptName conceptNameForLanguage = service.getConceptNameByConceptId(Integer
+				        .parseInt(preferredLanguageConceptId.trim()));
+				preferredLanguageName = conceptNameForLanguage.getName();
+			} else {
+				preferredLanguageName = "Urdu";
+			}
+		}
+		catch (Exception e) {
+			//			ConceptName conceptNameForLanguage = service.getConceptNameByConceptId(164);
+			preferredLanguageName = "Urdu";
+		}
 		sendInformation.setPreferredLanguage(preferredLanguageName);
 		return sendInformation;
 	}
