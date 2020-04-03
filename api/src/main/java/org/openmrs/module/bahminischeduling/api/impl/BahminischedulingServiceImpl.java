@@ -11,6 +11,8 @@ package org.openmrs.module.bahminischeduling.api.impl;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.bahminischeduling.AppointmentReminderLog;
@@ -34,6 +36,8 @@ import com.twilio.type.PhoneNumber;
 
 @Service
 public class BahminischedulingServiceImpl extends BaseOpenmrsService implements BahminischedulingService {
+	
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	@Autowired
 	BahminischedulingDao dao;
@@ -160,7 +164,7 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		
 		return message;
@@ -188,5 +192,10 @@ public class BahminischedulingServiceImpl extends BaseOpenmrsService implements 
 	public void updateSmsStatusSevenDayByPatientAppointmentId(
 	        List<PatientAppointmentReminder> patientAppointmentReminderList, String smsStatus) {
 		dao.updateSmsStatusSevenDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
+	}
+	
+	@Override
+	public List<PatientAppointment> getPatientAppointmentsScheduledMissed() {
+		return dao.getPatientAppointmentsScheduledMissed();
 	}
 }

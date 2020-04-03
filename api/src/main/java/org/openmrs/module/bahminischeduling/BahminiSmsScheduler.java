@@ -1,9 +1,13 @@
 package org.openmrs.module.bahminischeduling;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +44,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 	@Override
 	public void execute() {
 		service = BSContext.getBahminischedulingService();
+		
+		log.debug("************* Bahmni started ****************");
 		
 		super.startExecuting();
 		
@@ -139,6 +145,83 @@ public class BahminiSmsScheduler extends AbstractTask {
 								tempMessage = tempMessage.concat("\n"
 								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
 								                .getStart_date_time().toString())));
+							} else {
+								try {
+									tempMessage = tempMessage.replaceAll(
+									    "DATE",
+									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+									            .getStart_date_time().toString())));
+								}
+								catch (Exception e) {
+									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
+									        .getStart_date_time().toString());
+								}
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("Title", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
+								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								                .getAppointment_service_id()));
+								
+							}
+							messageOneDay = messageOneDay + "\n\n" + tempMessage;
+						} else if (checkDateForMissedDayBefore(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
+							specificPatientAppointmentListForSendSmsForOneDay.add(specificPatientAppointmentList.get(i));
+							
+							patientAppointmentIdsForOneDay = patientAppointmentIdsForOneDay + ","
+							        + specificPatientAppointmentList.get(i).getPatient_appointment_id();
+							
+							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), -1)
+							        .getTextMessage();
+							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
+								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+								            .getAppointment_service_id()));
+								if (aptNameGp != null && !aptNameGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replaceAll(
+										    "سروس",
+										    Context.getAdministrationService().getGlobalProperty(
+										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+										                .getAppointment_service_id())));
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								
+								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+									try {
+										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+									}
+									catch (APIException e) {
+										e.printStackTrace();
+									}
+								}
+								SimpleDateFormat sdf = new SimpleDateFormat("HH:mm a");
+								String timeOnly = sdf.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								        .getStart_date_time().toString()));
+								
+								LocalDate localDate = sourceFormat
+								        .parse(specificPatientAppointmentList.get(i).getStart_date_time().toString())
+								        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+								String month = MonthNameUtil.getMonthNameUrdu(localDate.getMonthValue());
+								int day = localDate.getDayOfMonth();
+								String date = "";
+								date += " " + day;
+								date += month;
+								date += " \u202B" + timeOnly;
+								tempMessage = tempMessage.replace("گزشتہ تاریخ", date);
+								//								tempMessage = tempMessage.concat("\n"
+								//								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+								//								                .getStart_date_time().toString())));
 							} else {
 								try {
 									tempMessage = tempMessage.replaceAll(
@@ -371,6 +454,11 @@ public class BahminiSmsScheduler extends AbstractTask {
 				if (messageResponse.getErrorCode() == null) {
 					service.updateSmsStatusOneDayByPatientAppointmentId(patientAppointmentReminderList, smsStatus);
 				}
+			} else {
+				log.info("Message is null line number: 441");
+				//				appointmentReminderLog = new AppointmentReminderLog();
+				//				appointmentReminderLog.setMessage(sendInformation.getOneDayMessage());
+				//				service.insert(appointmentReminderLog);
 			}
 		}
 		
@@ -445,13 +533,40 @@ public class BahminiSmsScheduler extends AbstractTask {
 		
 		System.out.println(currentJodaDate.toDateMidnight());
 		System.out.println(appJodaDate.toDateMidnight());
-		int daysBetween = Days.daysBetween(currentJodaDate.toDateMidnight(), appJodaDate.toDateMidnight()).getDays();
-		
+		int daysBetween = 0;
+		if (currentJodaDate.isBefore(appJodaDate)) {
+			daysBetween = Days.daysBetween(currentJodaDate.toDateMidnight(), appJodaDate.toDateMidnight()).getDays();
+		}
 		long diff = appointmentDate.getTime() - currentDate.getTime();
 		
 		log.info(" Days: " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
 		
 		if (daysBetween == 1) {
+			condition = true;
+		}
+		
+		return condition;
+	}
+	
+	private Boolean checkDateForMissedDayBefore(String dateInStringP) {
+		log.error("Inside previous day check method");
+		Boolean condition = false;
+		
+		Date currentDate = CustomDate.getcurrentDateInFormat(CustomDate.DATE_FORMAT_YYYY_MM_DD);
+		Date appointmentDate = CustomDate.convertDateInStringToDate(dateInStringP, CustomDate.DATE_FORMAT_YYYY_MM_DD);
+		
+		DateTime currentJodaDate = new DateTime(currentDate);
+		DateTime appJodaDate = new DateTime(appointmentDate);
+		
+		int daysBetween = 0;
+		if (currentJodaDate.isAfter(appJodaDate))
+			daysBetween = Days.daysBetween(appJodaDate.toDateMidnight(), currentJodaDate.toDateMidnight()).getDays();
+		
+		long diff = appointmentDate.getTime() - currentDate.getTime();
+		
+		log.info(" Days: " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+		
+		if (daysBetween >= 1) {
 			condition = true;
 		}
 		
@@ -482,7 +597,8 @@ public class BahminiSmsScheduler extends AbstractTask {
 		dataLoadedCheck = service.getDataLoadedCheck();
 		
 		if (dataLoadedCheck.equals("NO")) {
-			List<PatientAppointment> patientAppointmentList = service.getPatientAppointmentsByStatus("Scheduled");
+			//			List<PatientAppointment> patientAppointmentList = service.getPatientAppointmentsByStatus("Scheduled");
+			List<PatientAppointment> patientAppointmentList = service.getPatientAppointmentsScheduledMissed();
 			
 			//  save into patient appointment reminder initial Data	
 			insertDataInPatientAppointmentReminder(patientAppointmentList);

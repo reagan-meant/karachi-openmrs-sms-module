@@ -193,13 +193,36 @@ public class BahminischedulingDao {
 			  return patientAppList;
 		}
 	
+	public  List<PatientAppointment> getPatientAppointmentsScheduledMissed(){
+		  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
+
+		  BahminischedulingActivator.jdbcTemplate.query(
+	                "SELECT * FROM  patient_appointment where status = ? OR status = ?", 
+	                new Object[] { "Scheduled", "Missed" },
+	                (rs, rowNum) -> new PatientAppointment(rs.getInt("patient_appointment_id"), 
+	                		rs.getInt("provider_id"), 
+	                		rs.getInt("appointment_number"), 
+	                		rs.getInt("patient_id"), 
+	                		rs.getInt("appointment_service_id"), 
+	                		rs.getInt("appointment_service_type_id"), 
+	                		rs.getString("status"), 
+	                		rs.getString("appointment_kind"), 
+	                		rs.getString("start_date_time") , 
+	                		rs.getString("end_date_time"))
+	        )
+		
+		  .forEach(patientApp -> patientAppList.add(patientApp) );
+		
+		  return patientAppList;
+	}
+	
 	public  List<PatientAppointment> getPatientAppointmentsGreaterThanPatientaAppointmentId(int patientAppointmentId , String status)
 		{
 			  List<PatientAppointment> patientAppList=new ArrayList<PatientAppointment>();
 	
 			  BahminischedulingActivator.jdbcTemplate.query(
-		                "SELECT * FROM  patient_appointment where patient_appointment_id > ? and status = ? ", 
-		                new Object[] { patientAppointmentId , status },
+		                "SELECT * FROM  patient_appointment where (patient_appointment_id > ? and status = ?) OR (status = ? AND patient_appointment_id NOT IN (select patient_appointment_id from patient_appointment_reminder where status = ?))", 
+		                new Object[] { patientAppointmentId , status , "Missed", "Missed"},
 		                (rs, rowNum) -> new PatientAppointment(rs.getInt("patient_appointment_id"), 
 		                		rs.getInt("provider_id"), 
 		                		rs.getInt("appointment_number"), 
@@ -229,7 +252,7 @@ public class BahminischedulingDao {
 	
 		 BahminischedulingActivator.jdbcTemplate.query(
 //				 "SELECT * FROM  patient_appointment_reminder  where (sms_status_one_day !='success' or sms_status_seven_day != 'success') and appointment_service_id != 7", 
-				 "SELECT * FROM  patient_appointment_reminder  where ( (DATEDIFF(start_date_time,CURDATE()) = 1 and sms_status_one_day != 'success')  OR  (DATEDIFF(start_date_time,CURDATE()) = 7 and sms_status_seven_day != 'success') ) and appointment_service_id != 7",
+				 "SELECT * FROM  patient_appointment_reminder  where ( (DATEDIFF(start_date_time,CURDATE()) = 1 and sms_status_one_day != 'success') OR (DATEDIFF(CURDATE(), start_date_time) = 1 and sms_status_one_day != 'success' and status='Missed') OR  (DATEDIFF(start_date_time,CURDATE()) = 7 and sms_status_seven_day != 'success') ) and appointment_service_id not in (7,6,3)",
 				 (rs, rowNum) -> new PatientAppointmentReminder(rs.getInt("id"),
 						 rs.getInt("patient_appointment_id"), 
 						 rs.getInt("patient_id"),
@@ -396,16 +419,20 @@ public class BahminischedulingDao {
 	
 	public  PersonAttribute getConsentByPersonId(int id, int personAttTypeId){
 		 List<PersonAttribute> personAttributesList=new ArrayList<PersonAttribute>();
-		 BahminischedulingActivator.jdbcTemplate.query(
-				 "SELECT * FROM  person_attribute where person_id = ? and person_attribute_type_id=?", 
-				 new Object[] { id,personAttTypeId },
-				 (rs, rowNum) -> new PersonAttribute(rs.getInt("person_attribute_id"), 
-						 rs.getInt("person_id"), 
-						 rs.getString("value"), 
-						 rs.getInt("person_attribute_type_id"))
-				 )
-				 .forEach(patientApp -> personAttributesList.add(patientApp));			
-		 return personAttributesList.get(0);
+		 try{
+			 BahminischedulingActivator.jdbcTemplate.query(
+					 "SELECT * FROM  person_attribute where person_id = ? and person_attribute_type_id=?", 
+					 new Object[] { id,personAttTypeId },
+					 (rs, rowNum) -> new PersonAttribute(rs.getInt("person_attribute_id"), 
+							 rs.getInt("person_id"), 
+							 rs.getString("value"), 
+							 rs.getInt("person_attribute_type_id"))
+					 )
+					 .forEach(patientApp -> personAttributesList.add(patientApp));	
+			 return personAttributesList.get(0);
+		 }catch(IndexOutOfBoundsException e){
+			 return new PersonAttribute();
+		 }
 	 }
 	
 	public void updatePersonAttributet(int id, String status) {

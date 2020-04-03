@@ -57,6 +57,8 @@ public interface BahminischedulingService extends OpenmrsService {
 	
 	List<PatientAppointment> getPatientAppointmentsByStatus(String status);
 	
+	List<PatientAppointment> getPatientAppointmentsScheduledMissed();
+	
 	List<PatientAppointment> getPatientAppointmentsGreaterThanPatientaAppointmentId(int patientAppointmentId, String status);
 	
 	void updatePatientAppointment(int id, String status);
