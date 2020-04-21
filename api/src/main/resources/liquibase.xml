@@ -193,22 +193,22 @@
 	<changeSet author="ABC" id="insert-to-sms-table">
 	    <insert tableName="sms_language">
 	        <!-- <column name="text_message" value=" پر مقرر ہے (DATE) APPOINTMENT_SERVICE کے لئے تقرری "/> -->
-	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات مندرجہ ذیل تاریخ پر طےشدہ ہے"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Urdu"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Pashtu"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Bengali"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Sindhi"/>
 	        <column name="day" valueNumeric="1"/>
 	    </insert>
@@ -216,22 +216,22 @@
 	    <insert tableName="sms_language">
 	        <!-- <column name="text_message" value=" پر مقرر ہے (DATE) APPOINTMENT_SERVICE کے لئے تقرری "/> -->
          	<!-- <column name="text_message" value="آپ کی 'APPOINTMENT_SERVICE' کے لئے ملاقات مندرجہ ذیل تاریخ پر طے شدہ ہے"/> -->
-         	<column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات مندرجہ ذیل تاریخ پر طےشدہ ہے"/>
+         	<column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Urdu"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Pashtu"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Bengali"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT IS SCHEDULED ON DATE FOR 'APPOINTMENT_SERVICE'"/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'تاریخ' پر طے شدہ ہے"/>
 	        <column name="locale" value="Sindhi"/>
 	        <column name="day" valueNumeric="7"/>
 	    </insert>
@@ -244,17 +244,17 @@
 	        <column name="day" valueNumeric="-1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT FOR 'APPOINTMENT_SERVICE' ON DATE WAS MISSED. Please contact 03018115153 for new appointment."/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'گزشتہ تاریخ' بجے تھی۔ نئ تاریخ کے لئے برائے مہربانی ہمارے نمائیندے سے 03018115153 پر رابطہ کریں"/>
 	        <column name="locale" value="Pashtu"/>
 	        <column name="day" valueNumeric="-1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT FOR 'APPOINTMENT_SERVICE' ON DATE WAS MISSED. Please contact 03018115153 for new appointment."/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'گزشتہ تاریخ' بجے تھی۔ نئ تاریخ کے لئے برائے مہربانی ہمارے نمائیندے سے 03018115153 پر رابطہ کریں"/>
 	        <column name="locale" value="Bengali"/>
 	        <column name="day" valueNumeric="-1"/>
 	    </insert>
 	    <insert tableName="sms_language">
-	        <column name="text_message" value="Title - YOUR APPOINTMENT FOR 'APPOINTMENT_SERVICE' ON DATE WAS MISSED. Please contact 03018115153 for new appointment."/>
+	        <column name="text_message" value="ٹائٹل - آپ کی 'سروس' کے لئے ملاقات 'گزشتہ تاریخ' بجے تھی۔ نئ تاریخ کے لئے برائے مہربانی ہمارے نمائیندے سے 03018115153 پر رابطہ کریں"/>
 	        <column name="locale" value="Sindhi"/>
 	        <column name="day" valueNumeric="-1"/>
 	    </insert>

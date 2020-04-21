@@ -116,60 +116,55 @@ public class BahminiSmsScheduler extends AbstractTask {
 							
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 1)
 							        .getTextMessage();
-							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
-								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
-								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								            .getAppointment_service_id()));
-								if (aptNameGp != null && !aptNameGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replaceAll(
-										    "سروس",
-										    Context.getAdministrationService().getGlobalProperty(
-										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-										                .getAppointment_service_id())));
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								tempMessage = tempMessage.concat("\n"
-								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								                .getStart_date_time().toString())));
-							} else {
+							
+							String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+							    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+							            .getAppointment_service_id()));
+							if (aptNameGp != null && !aptNameGp.isEmpty()) {
 								try {
 									tempMessage = tempMessage.replaceAll(
-									    "DATE",
-									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-									            .getStart_date_time().toString())));
+									    "سروس",
+									    Context.getAdministrationService().getGlobalProperty(
+									        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+									                .getAppointment_service_id())));
 								}
-								catch (Exception e) {
-									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-									        .getStart_date_time().toString());
+								catch (APIException e) {
+									e.printStackTrace();
 								}
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("Title", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
-								
 							}
+							
+							String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+							if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+								try {
+									tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+								}
+								catch (APIException e) {
+									e.printStackTrace();
+								}
+							}
+							SimpleDateFormat sdfTimeOnly = new SimpleDateFormat("HH:mm");
+							String timeOnly = sdfTimeOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							SimpleDateFormat sdfAmPmOnly = new SimpleDateFormat("a");
+							String amPmOnly = sdfAmPmOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							LocalDate localDate = sourceFormat
+							        .parse(specificPatientAppointmentList.get(i).getStart_date_time().toString())
+							        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+							String month = MonthNameUtil.getMonthNameUrdu(localDate.getMonthValue());
+							int day = localDate.getDayOfMonth();
+							String date = "";
+							date += day + " ";
+							date += month;
+							if (amPmOnly.equalsIgnoreCase("am"))
+								date += " صبح";
+							else if (amPmOnly.equalsIgnoreCase("pm"))
+								date += " دوپہر";
+							date += " \u202B" + timeOnly;
+							tempMessage = tempMessage.replace("تاریخ", date);
+							
 							messageOneDay = messageOneDay + "\n\n" + tempMessage;
 						} else if (checkDateForMissedDayBefore(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
 							specificPatientAppointmentListForSendSmsForOneDay.add(specificPatientAppointmentList.get(i));
@@ -179,74 +174,55 @@ public class BahminiSmsScheduler extends AbstractTask {
 							
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), -1)
 							        .getTextMessage();
-							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
-								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
-								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								            .getAppointment_service_id()));
-								if (aptNameGp != null && !aptNameGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replaceAll(
-										    "سروس",
-										    Context.getAdministrationService().getGlobalProperty(
-										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-										                .getAppointment_service_id())));
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								SimpleDateFormat sdf = new SimpleDateFormat("HH:mm a");
-								String timeOnly = sdf.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								        .getStart_date_time().toString()));
-								
-								LocalDate localDate = sourceFormat
-								        .parse(specificPatientAppointmentList.get(i).getStart_date_time().toString())
-								        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-								String month = MonthNameUtil.getMonthNameUrdu(localDate.getMonthValue());
-								int day = localDate.getDayOfMonth();
-								String date = "";
-								date += " " + day;
-								date += month;
-								date += " \u202B" + timeOnly;
-								tempMessage = tempMessage.replace("گزشتہ تاریخ", date);
-								//								tempMessage = tempMessage.concat("\n"
-								//								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								//								                .getStart_date_time().toString())));
-							} else {
+							
+							String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+							    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+							            .getAppointment_service_id()));
+							if (aptNameGp != null && !aptNameGp.isEmpty()) {
 								try {
 									tempMessage = tempMessage.replaceAll(
-									    "DATE",
-									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-									            .getStart_date_time().toString())));
+									    "سروس",
+									    Context.getAdministrationService().getGlobalProperty(
+									        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+									                .getAppointment_service_id())));
 								}
-								catch (Exception e) {
-									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-									        .getStart_date_time().toString());
+								catch (APIException e) {
+									e.printStackTrace();
 								}
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("Title", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
-								
 							}
+							
+							String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+							if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+								try {
+									tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+								}
+								catch (APIException e) {
+									e.printStackTrace();
+								}
+							}
+							SimpleDateFormat sdfTimeOnly = new SimpleDateFormat("HH:mm");
+							String timeOnly = sdfTimeOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							SimpleDateFormat sdfAmPmOnly = new SimpleDateFormat("a");
+							String amPmOnly = sdfAmPmOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							LocalDate localDate = sourceFormat
+							        .parse(specificPatientAppointmentList.get(i).getStart_date_time().toString())
+							        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+							String month = MonthNameUtil.getMonthNameUrdu(localDate.getMonthValue());
+							int day = localDate.getDayOfMonth();
+							String date = "";
+							date += day + " ";
+							date += month;
+							if (amPmOnly.equalsIgnoreCase("am"))
+								date += " صبح";
+							else if (amPmOnly.equalsIgnoreCase("pm"))
+								date += " دوپہر";
+							date += " \u202B" + timeOnly;
+							tempMessage = tempMessage.replace("گزشتہ تاریخ", date);
+							
 							messageOneDay = messageOneDay + "\n\n" + tempMessage;
 						} else if (checkDateForOneWeek(specificPatientAppointmentList.get(i).getStart_date_time()) == true) {
 							specificPatientAppointmentListForSendSmsForOneWeek.add(specificPatientAppointmentList.get(i));
@@ -257,59 +233,54 @@ public class BahminiSmsScheduler extends AbstractTask {
 							String tempMessage = service.getSmsByLocaleAndDay(sendInformation.getPreferredLanguage(), 7)
 							        .getTextMessage();
 							
-							if (sendInformation.getPreferredLanguage().equalsIgnoreCase("urdu")) {
-								String aptNameGp = Context.getAdministrationService().getGlobalProperty(
-								    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								            .getAppointment_service_id()));
-								if (aptNameGp != null && !aptNameGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replaceAll(
-										    "سروس",
-										    Context.getAdministrationService().getGlobalProperty(
-										        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
-										                .getAppointment_service_id())));
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								tempMessage = tempMessage.concat("\n"
-								        + desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-								                .getStart_date_time().toString())));
-							} else {
+							String aptNameGp = Context.getAdministrationService().getGlobalProperty(
+							    service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+							            .getAppointment_service_id()));
+							if (aptNameGp != null && !aptNameGp.isEmpty()) {
 								try {
 									tempMessage = tempMessage.replaceAll(
-									    "DATE",
-									    desiredFormat.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
-									            .getStart_date_time().toString())));
+									    "سروس",
+									    Context.getAdministrationService().getGlobalProperty(
+									        service.getAppointmentServiceName(specificPatientAppointmentList.get(i)
+									                .getAppointment_service_id())));
 								}
-								catch (Exception e) {
-									tempMessage = tempMessage.replaceAll("DATE", specificPatientAppointmentList.get(i)
-									        .getStart_date_time().toString());
+								catch (APIException e) {
+									e.printStackTrace();
 								}
-								String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleEnglish");
-								if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
-									try {
-										tempMessage = tempMessage.replace("Title", smsTitleGp);
-									}
-									catch (APIException e) {
-										e.printStackTrace();
-									}
-								}
-								tempMessage = tempMessage.replaceAll("APPOINTMENT_SERVICE", service
-								        .getAppointmentServiceName(specificPatientAppointmentList.get(i)
-								                .getAppointment_service_id()));
 							}
+							
+							String smsTitleGp = Context.getAdministrationService().getGlobalProperty("smsTitleUrdu");
+							if (smsTitleGp != null && !smsTitleGp.isEmpty()) {
+								try {
+									tempMessage = tempMessage.replace("ٹائٹل", smsTitleGp);
+								}
+								catch (APIException e) {
+									e.printStackTrace();
+								}
+							}
+							SimpleDateFormat sdfTimeOnly = new SimpleDateFormat("HH:mm");
+							String timeOnly = sdfTimeOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							SimpleDateFormat sdfAmPmOnly = new SimpleDateFormat("a");
+							String amPmOnly = sdfAmPmOnly.format(sourceFormat.parse(specificPatientAppointmentList.get(i)
+							        .getStart_date_time().toString()));
+							
+							LocalDate localDate = sourceFormat
+							        .parse(specificPatientAppointmentList.get(i).getStart_date_time().toString())
+							        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+							String month = MonthNameUtil.getMonthNameUrdu(localDate.getMonthValue());
+							int day = localDate.getDayOfMonth();
+							String date = "";
+							date += day + " ";
+							date += month;
+							if (amPmOnly.equalsIgnoreCase("am"))
+								date += " صبح";
+							else if (amPmOnly.equalsIgnoreCase("pm"))
+								date += " دوپہر";
+							date += " \u202B" + timeOnly;
+							tempMessage = tempMessage.replace("تاریخ", date);
+							
 							messageOneWeek = messageOneWeek + "\n\n" + tempMessage;
 						}
 					}

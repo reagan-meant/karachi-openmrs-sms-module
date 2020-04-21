@@ -4,29 +4,29 @@ public class MonthNameUtil {
 	
 	public static String getMonthNameUrdu(int number) {
 		switch (number) {
-			case 0:
-				return "جنوری";
 			case 1:
-				return "فروری";
+				return "جنوری";
 			case 2:
-				return "مارچ";
+				return "فروری";
 			case 3:
-				return "اپریل";
+				return "مارچ";
 			case 4:
-				return "مئی";
+				return "اپریل";
 			case 5:
-				return "جون";
+				return "مئی";
 			case 6:
-				return "جولائی";
+				return "جون";
 			case 7:
-				return "اگست";
+				return "جولائی";
 			case 8:
-				return "ستمبر";
+				return "اگست";
 			case 9:
-				return "اکتوبر";
+				return "ستمبر";
 			case 10:
-				return "نومبر";
+				return "اکتوبر";
 			case 11:
+				return "نومبر";
+			case 12:
 				return "دسمبر";
 			default:
 				return "";
