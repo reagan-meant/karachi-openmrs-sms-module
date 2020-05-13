@@ -10,7 +10,7 @@
 
 	<groupId>org.openmrs.module.bahminischeduling</groupId>
 	<artifactId>bahminischeduling</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<packaging>pom</packaging>
 	<name>Bahminischeduling</name>
 	<description>An openmrs module for Bahmini Scheduling.</description>

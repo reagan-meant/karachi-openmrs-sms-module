@@ -116,21 +116,21 @@
 	
 	<globalProperty>
 		<property>twilioNumber</property>
-		<defaultValue>+12702142794</defaultValue>
+		<defaultValue>+12056198644</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
 	
 	<globalProperty>
 		<property>accountSid</property>
-		<defaultValue>AC81d2a1a6edf0c9180b73cb60940aa930</defaultValue>
+		<defaultValue>AC658f14df59aa150e8a1f8817f95bd67c</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
 	
 	<globalProperty>
 		<property>authToken</property>
-		<defaultValue>dcceb8cec790b9e9db5a31c471acb6de</defaultValue>
+		<defaultValue>541e45c5d28676e7f10337eca9a8cae4</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
@@ -145,6 +145,20 @@
 	<globalProperty>
 		<property>Doctor Consultation</property>
 		<defaultValue>ڈاکٹر سے مشاورت</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+		
+	<globalProperty>
+		<property>Doctor Consultation (new)</property>
+		<defaultValue>ڈاکٹر سے مشاورت</defaultValue>
+		<description>
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>Doctor Consultation (FUP)</property>
+		<defaultValue>ڈاکٹر  کے ساتھ فالو اپ مشاورت</defaultValue>
 		<description>
 		</description>
 	</globalProperty>
