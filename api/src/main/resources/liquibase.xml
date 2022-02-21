@@ -310,39 +310,6 @@
 	</changeSet>
 	
 	
-	<changeSet author="liquibase-docs" id="dropTable-registration">
-	    <preConditions onFail="MARK_RAN"><tableExists tableName="registration"/></preConditions>
-	    <dropTable cascadeConstraints="true"
-	            tableName="registration"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="dropView-registration">
-	    <preConditions onFail="MARK_RAN"><viewExists viewName="registration"/></preConditions>	
-	    <dropView viewName="registration"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="createView-registration">
-    	<createView
-            viewName="registration">SELECT 
-			 1 AS Registration_Date,
-			 1 AS PATIENT_ID,
-			 1 AS Hepamud_ID,
-			 1 AS PATIENT_NAME,
-			 1 AS GENDER,
-			 1 AS AGE,
-			 1 AS area_of_origin,
-			 1 AS origin_details,
-			 1 AS phone_number,
-			 1 AS consent,
-			 1 AS contact_language,
-			 1 AS no_people_HH,
-			 1 AS under_12_members,
-			 1 AS household_screened,
-			 1 AS recruitment_method
-		</createView>
-	</changeSet>
-	
-	
 	<changeSet author="liquibase-docs" id="dropTable-conceptView">
 	    <preConditions onFail="MARK_RAN"><tableExists tableName="concept_view"/></preConditions>
 	    <dropTable cascadeConstraints="true"
@@ -367,42 +334,7 @@
 			 1 AS date_created
 		</createView>
 	</changeSet>
-	
-	
-	<changeSet author="liquibase-docs" id="dropTable-visitForm">
-	    <preConditions onFail="MARK_RAN"><tableExists tableName="visit_form"/></preConditions>
-	    <dropTable cascadeConstraints="true"
-	            tableName="visit_form"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="dropView-visitForm">
-	    <preConditions onFail="MARK_RAN"><viewExists viewName="visit_form"/></preConditions>
-	    <dropView viewName="visit_form"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="createView-visitForm">
-    	<createView
-            viewName="visit_form">SELECT 
-				 1 AS PATIENT_ID,
-				 1 AS Hepamud_ID,
-				 1 AS PATIENT_NAME,
-				 1 AS GENDER,
-				 1 AS AGE,
-				 1 AS USERNAME,
-				 1 AS LOCATION,
-				 1 AS visit_form_visit_date,
-				 1 AS type_of_visit,
-				 1 AS Type_ps_session,
-				 1 AS Vaccine_given,
-				 1 AS Ultrasound_performed,
-				 1 AS lab_test_performed,
-				 1 AS Treatment_Regimen,
-				 1 AS type_of_family_planning,
-				 1 AS Outcome_visit,
-				 1 AS Comments
-		</createView>
-	</changeSet>
-	
+		
 	
 	<changeSet author="liquibase-docs" id="dropView-diagnosisConceptViewTemp">
 	    <preConditions onFail="MARK_RAN"><viewExists viewName="diagnosis_concept_view"/></preConditions>
@@ -430,19 +362,6 @@
 	</changeSet>
 	
 	
-	<changeSet author="liquibase-docs" id="dropView-registrationTemp">
-	    <preConditions onFail="MARK_RAN"><viewExists viewName="registration"/></preConditions>
-	    <dropView viewName="registration"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="createView-registrationFinal">
-    	<createView
-            viewName="registration">
-            select cast(`PR`.`date_created` as date) AS `Registration_Date`,`ID`.`identifier` AS `PATIENT_ID`,`ID2`.`identifier` AS `Hepamud_ID`,ucase(concat(`NM`.`given_name`,' ',`NM`.`family_name`)) AS `PATIENT_NAME`,`PR`.`gender` AS `GENDER`,(year(`PR`.`date_created`) - year(`PR`.`birthdate`)) AS `AGE`,(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`PA`.`value`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))) AS `area_of_origin`,`PA1`.`value` AS `origin_details`,`PA2`.`value` AS `phone_number`,if((`PA7`.`value` = 1),'Yes','No') AS `consent`,(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`PA8`.`value`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))) AS `contact_language`,`PA3`.`value` AS `no_people_HH`,`PA4`.`value` AS `under_12_members`,(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`PA5`.`value`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))) AS `household_screened`,(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`PA6`.`value`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))) AS `recruitment_method` from (((((((((((((`patient` `PT` join `person` `PR` on(((`PR`.`person_id` = `PT`.`patient_id`) and (`PR`.`voided` = 0)))) join `person_name` `NM` on(((`NM`.`person_id` = `PT`.`patient_id`) and (`NM`.`voided` = 0) and (`NM`.`preferred` = 1)))) left join `person_attribute` `PA` on(((`PA`.`person_id` = `PT`.`patient_id`) and (`PA`.`person_attribute_type_id` = 14)))) left join `person_attribute` `PA1` on(((`PA1`.`person_id` = `PT`.`patient_id`) and (`PA1`.`person_attribute_type_id` = 15)))) left join `person_attribute` `PA2` on(((`PA2`.`person_id` = `PT`.`patient_id`) and (`PA2`.`person_attribute_type_id` = 16)))) left join `person_attribute` `PA7` on(((`PA7`.`person_id` = `PT`.`patient_id`) and (`PA7`.`person_attribute_type_id` = 17)))) left join `person_attribute` `PA8` on(((`PA8`.`person_id` = `PT`.`patient_id`) and (`PA8`.`person_attribute_type_id` = 18)))) left join `person_attribute` `PA3` on(((`PA3`.`person_id` = `PT`.`patient_id`) and (`PA3`.`person_attribute_type_id` = 19)))) left join `person_attribute` `PA4` on(((`PA4`.`person_id` = `PT`.`patient_id`) and (`PA4`.`person_attribute_type_id` = 20)))) left join `person_attribute` `PA5` on(((`PA5`.`person_id` = `PT`.`patient_id`) and (`PA5`.`person_attribute_type_id` = 21)))) left join `person_attribute` `PA6` on(((`PA6`.`person_id` = `PT`.`patient_id`) and (`PA6`.`person_attribute_type_id` = 22)))) join `patient_identifier` `ID` on(((`ID`.`patient_id` = `PT`.`patient_id`) and (`ID`.`identifier_type` = 3) and (`ID`.`voided` = 0) and (`ID`.`preferred` = 1)))) left join `patient_identifier` `ID2` on(((`ID2`.`patient_id` = `PT`.`patient_id`) and (`ID2`.`identifier_type` = 4) and (`ID2`.`voided` = 0)))) where (`PT`.`voided` = 0);
-		</createView>
-	</changeSet>
-	
-	
 	<changeSet author="liquibase-docs" id="dropView-conceptViewTemp">
 	    <preConditions onFail="MARK_RAN"><viewExists viewName="concept_view"/></preConditions>
 	    <dropView viewName="concept_view"/>
@@ -454,18 +373,7 @@
             select `concept`.`concept_id` AS `concept_id`,`concept_full_name`.`name` AS `concept_full_name`,`concept_short_name`.`name` AS `concept_short_name`,`concept_class`.`name` AS `concept_class_name`,`concept_datatype`.`name` AS `concept_datatype_name`,`concept`.`retired` AS `retired`,`concept_description`.`description` AS `description`,`concept`.`date_created` AS `date_created` from (((((`concept` left join `concept_name` `concept_full_name` on(((`concept_full_name`.`concept_id` = `concept`.`concept_id`) and (`concept_full_name`.`concept_name_type` = 'FULLY_SPECIFIED') and (`concept_full_name`.`locale` = 'en') and (`concept_full_name`.`voided` = 0)))) left join `concept_name` `concept_short_name` on(((`concept_short_name`.`concept_id` = `concept`.`concept_id`) and (`concept_short_name`.`concept_name_type` = 'SHORT') and (`concept_short_name`.`locale` = 'en') and (`concept_short_name`.`voided` = 0)))) left join `concept_class` on((`concept_class`.`concept_class_id` = `concept`.`class_id`))) left join `concept_datatype` on((`concept_datatype`.`concept_datatype_id` = `concept`.`datatype_id`))) left join `concept_description` on((`concept_description`.`concept_id` = `concept`.`concept_id`)));
 		</createView>
 	</changeSet>	
-	
-	<changeSet author="liquibase-docs" id="dropView-visitFormTemp">
-	    <preConditions onFail="MARK_RAN"><viewExists viewName="concept_view"/></preConditions>
-	    <dropView viewName="visit_form"/>
-	</changeSet>
-	
-	<changeSet author="liquibase-docs" id="createView-visitFormFinal">
-    	<createView
-            viewName="visit_form">
-            select `ID`.`identifier` AS `PATIENT_ID`,`ID2`.`identifier` AS `Hepamud_ID`,ucase(concat(`NM`.`given_name`,' ',`NM`.`family_name`)) AS `PATIENT_NAME`,`PR`.`gender` AS `GENDER`,(year(curdate()) - year(`PR`.`birthdate`)) AS `AGE`,`US`.`username` AS `USERNAME`,`LO`.`name` AS `LOCATION`,group_concat(if((`o_sc`.`concept_id` = 187),concat(cast(`o_sc`.`value_datetime` as date)),NULL) separator ',') AS `visit_form_visit_date`,group_concat(if((`o_sc`.`concept_id` = 196),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `type_of_visit`,group_concat(if((`o_sc`.`concept_id` = 204),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `Type_ps_session`,group_concat(if((`o_sc`.`concept_id` = 208),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `Vaccine_given`,group_concat(if((`o_sc`.`concept_id` = 209),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `Ultrasound_performed`,group_concat(if((`o_sc`.`concept_id` = 229),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `lab_test_performed`,group_concat(if((`o_sc`.`concept_id` = 236),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `Treatment_Regimen`,group_concat(if((`o_sc`.`concept_id` = 250),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `type_of_family_planning`,group_concat(if((`o_sc`.`concept_id` = 238),(select `concept_name`.`name` from `concept_name` where ((`concept_name`.`concept_id` = concat(`o_sc`.`value_coded`)) and (`concept_name`.`locale_preferred` = 1) and (`concept_name`.`voided` = 0) and (`concept_name`.`locale` = 'en'))),NULL) separator ',') AS `Outcome_visit`,group_concat(if((`o_sc`.`concept_id` = 237),concat(`o_sc`.`value_text`),NULL) separator ',') AS `Comments` from ((((((((`patient` `PT` join `person` `PR` on(((`PR`.`person_id` = `PT`.`patient_id`) and (`PR`.`voided` = 0)))) join `person_name` `NM` on(((`NM`.`person_id` = `PT`.`patient_id`) and (`NM`.`voided` = 0) and (`NM`.`preferred` = 1)))) join `encounter` `EN` on((`EN`.`patient_id` = `PT`.`patient_id`))) join `patient_identifier` `ID` on(((`ID`.`patient_id` = `PT`.`patient_id`) and (`ID`.`identifier_type` = 3) and (`ID`.`voided` = 0) and (`ID`.`preferred` = 1)))) left join `patient_identifier` `ID2` on(((`ID2`.`patient_id` = `PT`.`patient_id`) and (`ID2`.`identifier_type` = 4) and (`ID2`.`voided` = 0)))) join `users` `US` on((`US`.`user_id` = `EN`.`creator`))) join `location` `LO` on((`LO`.`location_id` = `EN`.`location_id`))) left join `obs` `o_sc` on(((`o_sc`.`encounter_id` = `EN`.`encounter_id`) and (`o_sc`.`voided` = 0)))) where ((`EN`.`encounter_type` = 2) and (`PT`.`voided` = 0) and (`EN`.`voided` = 0) and (`o_sc`.`voided` = 0)) group by `EN`.`encounter_id`;
-		</createView>
-	</changeSet>	
+		
 	
 	<!-- <changeSet author="bahmni-scheduling" id="insert-globalProperty-dc(fup)">
 		<preConditions onFail="MARK_RAN">
